@@ -19,8 +19,8 @@ class MIMEWriterCest
     public function writeTextMessage(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY
         );
@@ -31,8 +31,8 @@ class MIMEWriterCest
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,8 +48,8 @@ MIME;
     public function writeTextMessageWithAttachment(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY
         );
@@ -64,8 +64,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -93,8 +93,8 @@ MIME;
     public function writeHTMLMessage(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             null,
             self::HTML_BODY
@@ -106,8 +106,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/html; charset=UTF-8
@@ -123,8 +123,8 @@ MIME;
     public function writeHTMLMessageWithAttachment(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             null,
             self::HTML_BODY
@@ -140,8 +140,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -169,8 +169,8 @@ MIME;
     public function writeTextAndHTMLMessage(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY,
             self::HTML_BODY
@@ -183,8 +183,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: Rasmus Schultz <rasc@jfmedier.dk>
-From: rasmus@mindplay.dk
+To: Rasmus Schultz <blip@test.org>
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="++++alternative-aaafaf7c286e771e9bd71eacae9f26ae36c9c650++++"
@@ -209,8 +209,8 @@ MIME;
     public function writeTextAndHTMLMessageWithAttachment(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY,
             self::HTML_BODY
@@ -228,8 +228,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -269,8 +269,8 @@ MIME;
         //       as well as constructing an Attachment instance using string content
 
         $message = new Message(
-            new Address("rasc@jfmedier.dk", "Rasmus åh Schultz"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY
         );
@@ -289,8 +289,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <rasc@jfmedier.dk>?=
-From: rasmus@mindplay.dk
+To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -325,10 +325,10 @@ MIME;
     {
         $message = new Message(
             [
-                new Address("rasc@jfmedier.dk", "Rasmus Schultz"),
-                new Address("also-rasc@jfmedier.dk", "Also Rasmus Schultz")
+                new Address("blip@test.org", "Rasmus Schultz"),
+                new Address("also-blip@test.org", "Also Rasmus Schultz")
             ],
-            new Address("rasmus@mindplay.dk"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             "Hello!"
         );
@@ -337,8 +337,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: Rasmus Schultz <rasc@jfmedier.dk>, Also Rasmus Schultz <also-rasc@jfmedier.dk>
-From: rasmus@mindplay.dk
+To: Rasmus Schultz <blip@test.org>, Also Rasmus Schultz <also-blip@test.org>
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -354,8 +354,8 @@ MIME;
     public function writeMessageWithCCAndBCCRecipients(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             "Hello!"
         );
@@ -368,8 +368,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: rasc@jfmedier.dk
-From: rasmus@mindplay.dk
+To: blip@test.org
+From: blub@test.org
 Cc: joe@test.org
 Bcc: bob@test.org
 Subject: Hey, Rasmus!
@@ -387,8 +387,8 @@ MIME;
     public function writeMessageWithCustomHeaders(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk"),
-            new Address("rasmus@mindplay.dk"),
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
             "Hey, Rasmus!",
             "Hello!"
         );
@@ -399,8 +399,8 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: rasc@jfmedier.dk
-From: rasmus@mindplay.dk
+To: blip@test.org
+From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 X-Custom-Header: custom-value

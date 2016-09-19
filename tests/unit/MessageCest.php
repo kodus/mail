@@ -15,7 +15,7 @@ class MessageCest
     public function setHeader(UnitTester $I)
     {
         $message = new Message(
-            new Address("rasc@jfmedier.dk"),
+            new Address("blip@test.org"),
             new Address("foo@bar.org"),
             "Hello, Bob",
             null
