@@ -4,7 +4,6 @@ namespace Kodus\Mail\Test\Unit;
 
 use Kodus\Mail\Address;
 use Kodus\Mail\Message;
-use Kodus\Mail\MIMEWriter;
 use UnitTester;
 
 class MIMEWriterCest
@@ -110,10 +109,6 @@ Content-Transfer-Encoding: quoted-printable
 --++++alternative-aaafaf7c286e771e9bd71eacae9f26ae36c9c650++++--
 
 MIME;
-
-
-//        echo $this->toMIME($message);die();
-
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
