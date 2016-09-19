@@ -11,8 +11,15 @@ use InvalidArgumentException;
  */
 class Writer
 {
-    const LINE_LENGTH = 76;
-    const EOL         = "\n";
+    /**
+     * @var int
+     */
+    public $line_length = 76;
+
+    /**
+     * @var string end-of-line character(s)
+     */
+    public $eol = "\n";
 
     /**
      * @var resource
@@ -51,7 +58,8 @@ class Writer
      */
     public function writeLine($string = "")
     {
-        fwrite($this->output, $string . self::EOL);
+        fwrite($this->output, $string);
+        fwrite($this->output, $this->eol);
     }
 
     /**
@@ -65,8 +73,8 @@ class Writer
             $input,
             'convert.quoted-printable-encode',
             [
-                "line-length"      => self::LINE_LENGTH,
-                "line-break-chars" => self::EOL,
+                "line-length"      => $this->line_length,
+                "line-break-chars" => $this->eol,
             ]
         );
     }
@@ -82,8 +90,8 @@ class Writer
             $input,
             'convert.base64-encode',
             [
-                "line-length"        => self::LINE_LENGTH,
-                "line-break-chars"   => self::EOL,
+                "line-length"        => $this->line_length,
+                "line-break-chars"   => $this->eol,
                 "force-encode-first" => true,
             ]
         );

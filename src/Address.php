@@ -35,7 +35,7 @@ class Address
 
         if (empty($name)) {
             if (preg_match("/[\r\n]/", $name)) {
-                throw new RuntimeException("CRLF injection detected");
+                throw new RuntimeException("CR/LF injection detected");
             }
         }
 
