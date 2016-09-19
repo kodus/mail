@@ -45,6 +45,7 @@ class MIMEWriter extends Writer
             $this->writeMessageBody($message);
 
             foreach ($attachments as $attachment) {
+                $this->writeMultipartBoundary($boundary);
                 $this->writeAttachmentPart($attachment);
             }
 
@@ -154,7 +155,7 @@ class MIMEWriter extends Writer
      */
     public function writeHeader($name, $value)
     {
-//        if (mb_detect_encoding($value, 'ASCII', true) === true) {
+        // TODO QA: should be mb_detect_encoding($value, 'ASCII', true) but it appears to be broken in PHP 7 ?!
         if (preg_match('/^([\x00-\x7F])*$/', $value) === 1) {
             $this->writeLine("{$name}: {$value}");
         } else {

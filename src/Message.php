@@ -283,7 +283,13 @@ class Message
      */
     public function getHeaders()
     {
-        return $this->headers;
+        $all_headers = [];
+
+        foreach ($this->headers as $headers) {
+            $all_headers = array_merge($all_headers, $headers);
+        }
+
+        return $all_headers;
     }
 
     /**
@@ -292,7 +298,7 @@ class Message
      */
     public function setHeader($name, $value)
     {
-        $this->headers[$name] = [$value];
+        $this->headers[strtolower($name)] = [new Header($name, $value)];
     }
 
     /**
@@ -301,6 +307,6 @@ class Message
      */
     public function addHeader($name, $value)
     {
-        $this->headers[$name][] = $value;
+        $this->headers[strtolower($name)][] = new Header($name, $value);
     }
 }

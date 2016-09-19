@@ -1,2 +1,3 @@
 # Force line-endings to LF (checking out with CRLF on Windows would cause tests to fail!)
 *.php text eol=lf
+*.txt text eol=lf
