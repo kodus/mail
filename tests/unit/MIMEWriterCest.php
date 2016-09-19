@@ -7,6 +7,13 @@ use Kodus\Mail\Attachment;
 use Kodus\Mail\Message;
 use UnitTester;
 
+/**
+ * NOTE: all MIME messages have been linted/validated using this online validator:
+ *
+ *     http://www.mimevalidator.net/index.html
+ *
+ * I'd like to eventually automate MIME validation (and preferably locally) but haven't found the tool to do it.
+ */
 class MIMEWriterCest
 {
     const TEXT_BODY                  = "It's me! Rasmus!\n\nI love danish characters, look: æøåÆØÅ! whoa!\n\nTake care, friend.";
