@@ -29,18 +29,28 @@ class Address
      */
     public function __construct($email, $name = null)
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        if (! self::isValidEmail($email)) {
             throw new InvalidArgumentException("invalid e-mail address");
         }
 
-        if (empty($name)) {
-            if (preg_match("/[\r\n]/", $name)) {
+        if (! empty($name)) {
+            if (preg_match('/[\r\n]/', $name)) {
                 throw new RuntimeException("CR/LF injection detected");
             }
         }
 
         $this->email = $email;
         $this->name = $name;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return bool
+     */
+    public static function isValidEmail($email)
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
