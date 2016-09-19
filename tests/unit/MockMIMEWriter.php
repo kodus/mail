@@ -15,6 +15,8 @@ class MockMIMEWriter extends MIMEWriter
     {
         $this->index += 1;
 
-        return "===={$prefix}-{$this->index}====";
+        $id = sha1($prefix . $this->index);
+
+        return "++++{$prefix}-{$id}++++";
     }
 }

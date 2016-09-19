@@ -98,6 +98,7 @@ class MIMEWriter extends Writer
         $this->writeQuotedPrintableEncodingHeader();
         $this->writeLine();
         $this->writeQuotedPrintable($content);
+        $this->writeLine();
     }
 
     /**
@@ -111,6 +112,7 @@ class MIMEWriter extends Writer
         $this->writeQuotedPrintableEncodingHeader();
         $this->writeLine();
         $this->writeQuotedPrintable($content);
+        $this->writeLine();
     }
 
     /**
@@ -127,6 +129,7 @@ class MIMEWriter extends Writer
         $this->writeHeader("Content-Disposition", "attachment; filename=\"{$filename}\"");
         $this->writeLine();
         $this->writeBase64($attachment->getContent());
+        $this->writeLine();
     }
 
     /**
@@ -240,6 +243,6 @@ class MIMEWriter extends Writer
     {
         static $boundary_index = 1;
 
-        return "===={$prefix}-" . sha1(microtime(true) . $boundary_index++) . "====";
+        return "++++{$prefix}-" . sha1(microtime(true) . $boundary_index++) . "++++";
     }
 }
