@@ -54,12 +54,18 @@ class Address
     }
 
     /**
-     * @return string string representation of this Address
+     * @return string
      */
-    public function toString()
+    public function getEmail()
     {
-        return empty($this->name)
-            ? "{$this->email}"
-            : "{$this->name} <{$this->email}>";
+        return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

@@ -31,7 +31,7 @@ class MIMEWriterCest
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -64,7 +64,7 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -106,7 +106,7 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -140,7 +140,7 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -228,7 +228,7 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -269,7 +269,7 @@ MIME;
         //       as well as constructing an Attachment instance using string content
 
         $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
+            new Address("blip@test.org", "Rasmus Schultz"),
             new Address("blub@test.org"),
             "Hey, Rasmus!",
             self::TEXT_BODY
@@ -289,7 +289,7 @@ MIME;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: =?utf-8?Q?Rasmus =C3=A5h Schultz <blip@test.org>?=
+To: Rasmus Schultz <blip@test.org>
 From: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -432,6 +432,8 @@ MIME;
         $mime = stream_get_contents($temp);
 
         fclose($temp);
+
+//        echo "-----------------------------------\n{$mime}\n--------------------------------\n\n";
 
         return $mime;
     }

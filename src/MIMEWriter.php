@@ -155,12 +155,9 @@ class MIMEWriter extends Writer
      */
     public function writeHeader($name, $value)
     {
-        // TODO QA: should be mb_detect_encoding($value, 'ASCII', true) but it appears to be broken in PHP 7 ?!
-        if (preg_match('/^([\x00-\x7F])*$/', $value) === 1) {
-            $this->writeLine("{$name}: {$value}");
-        } else {
-            $this->writeLine("{$name}: =?utf-8?Q?" . quoted_printable_encode($value) . "?=");
-        }
+        $value = $this->escapeHeaderValue($value);
+
+        $this->writeLine("{$name}: {$value}");
     }
 
     /**
@@ -176,7 +173,12 @@ class MIMEWriter extends Writer
                     ", ",
                     array_map(
                         function (Address $address) {
-                            return $address->toString();
+                            $email = $address->getEmail();
+                            $name = $address->getName();
+
+                            return empty($name)
+                                ? $email
+                                : $this->escapeHeaderValue($name) . " <{$email}>";
                         },
                         $addresses
                     )
@@ -245,5 +247,19 @@ class MIMEWriter extends Writer
         static $boundary_index = 1;
 
         return "++++{$prefix}-" . sha1(microtime(true) . $boundary_index++) . "++++";
+    }
+
+    /**
+     * Escape UTF-8 string (if necessary) for use in a header-value
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function escapeHeaderValue($value)
+    {
+        return preg_match('/[\x80-\xFF]/', $value) === 1
+            ? "=?UTF-8?Q?" . quoted_printable_encode($value) . "?="
+            : $value; // as-is
     }
 }
