@@ -15,6 +15,11 @@ class Message
     private $from = [];
 
     /**
+     * @var Address
+     */
+    private $sender;
+
+    /**
      * @var Address[]
      */
     private $cc = [];
@@ -109,6 +114,12 @@ class Message
     }
 
     /**
+     * Specifies the author(s) of the message; that is, the mailbox(es)
+     * of the person(s) or system(s) responsible for the writing of the
+     * message.
+     *
+     * @see https://www.ietf.org/rfc/rfc0822.txt
+     *
      * @param Address|Address[] $address
      */
     public function setFrom($address)
@@ -122,6 +133,27 @@ class Message
     public function addFrom($address)
     {
         $this->from = array_merge($this->from, is_array($address) ? $address : [$address]);
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getSender()
+    {
+        return $this->sender;
+    }
+
+    /**
+     * Specifies the mailbox of the agent responsible for the actual
+     * transmission of the message.
+     *
+     * @see https://www.ietf.org/rfc/rfc0822.txt
+     *
+     * @param Address|null $sender
+     */
+    public function setSender(Address $sender)
+    {
+        $this->sender = $sender;
     }
 
     /**
