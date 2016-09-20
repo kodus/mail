@@ -17,9 +17,9 @@ class Writer
     public $line_length = 76;
 
     /**
-     * @var string end-of-line character(s)
+     * @var string end-of-line characters
      */
-    public $eol = "\n";
+    public $eol = "\r\n";
 
     /**
      * @var resource

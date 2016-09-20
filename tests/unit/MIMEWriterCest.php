@@ -16,12 +16,19 @@ use UnitTester;
  */
 class MIMEWriterCest
 {
-    const TEXT_BODY                  = "It's me! Rasmus!\n\nI love danish characters, look: æøåÆØÅ! whoa!\n\nTake care, friend.";
-    const TEXT_BODY_QUOTED_PRINTABLE = "It's me! Rasmus!\n\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\n\nTake care, friend.";
-    const TEXT_BODY_BASE64           = "SXQncyBtZSEgUmFzbXVzIQoKSSBsb3ZlIGRhbmlzaCBjaGFyYWN0ZXJzLCBsb29rOiDDpsO4w6XD\nhsOYw4UhIHdob2EhCgpUYWtlIGNhcmUsIGZyaWVuZC4=";
+    const TEXT_BODY                  = "It's me! Rasmus!\r\n\r\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
+    const TEXT_BODY_QUOTED_PRINTABLE = "It's me! Rasmus!\r\n\r\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
+    const TEXT_BODY_BASE64           = "SXQncyBtZSEgUmFzbXVzIQoKSSBsb3ZlIGRhbmlzaCBjaGFyYWN0ZXJzLCBsb29rOiDDpsO4w6XD\r\nhsOYw4UhIHdob2EhCgpUYWtlIGNhcmUsIGZyaWVuZC4=";
 
     const HTML_BODY                  = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: æøåÆØÅ! whoa!\n\nTake care, friend.";
     const HTML_BODY_QUOTED_PRINTABLE = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\n\nTake care, friend.";
+
+    private $last_mime;
+
+    public function _after(UnitTester $I)
+    {
+        $I->dumpFile($this->last_mime);
+    }
 
     public function writeTextMessage(UnitTester $I)
     {
@@ -452,7 +459,7 @@ MIME;
 
         fclose($temp);
 
-//        echo "-----------------------------------\n{$mime}\n--------------------------------\n\n";
+        $this->last_mime = $mime;
 
         return $mime;
     }

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -16,17 +15,7 @@
  *
  * @SuppressWarnings(PHPMD)
  */
-class UnitTester extends \Codeception\Actor
+class IntegrationTester extends \Codeception\Actor
 {
-    use _generated\UnitTesterActions;
-
-    /**
-     * @param string $contents
-     */
-    public function dumpFile($contents)
-    {
-        $name = preg_replace('/[^\w\d]/s', '-', $this->scenario->getFeature());
-
-        file_put_contents(dirname(__DIR__) . "/_output/mail.{$name}.txt", $contents);
-    }
+    use _generated\IntegrationTesterActions;
 }
