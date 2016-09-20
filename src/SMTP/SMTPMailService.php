@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodus\Mail;
+namespace Kodus\Mail\SMTP;
 
 use Psr\Log\LoggerInterface;
 
@@ -32,9 +32,9 @@ class SMTPMailService implements MailService
     protected $secure;
 
     /**
-     * @var string EHLO message
+     * @var string
      */
-    protected $ehlo;
+    protected $domain;
 
     /**
      * @var string SMTP username
@@ -49,7 +49,7 @@ class SMTPMailService implements MailService
     /**
      * @var string oauth access token
      */
-    protected $oauthToken;
+    protected $oauth_token;
 
     /**
      * @var string
@@ -81,11 +81,19 @@ class SMTPMailService implements MailService
     protected $result_stack = [];
 
     /**
+     * @param string $domain local domain-name (as specified in the EHLO message to the SMTP server)
+     */
+    public function __construct($domain)
+    {
+        $this->domain = $domain;
+    }
+
+    /**
      * @see http://www.php-fig.org/psr/psr-3/
      * 
-     * @param LoggerInterface|null $logger optional PSR-3 logger
+     * @param LoggerInterface|null $logger PSR-3 compliant Logger implementation
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
@@ -103,8 +111,8 @@ class SMTPMailService implements MailService
         $this->port = $port;
         $this->secure = $secure;
 
-        if (! $this->ehlo) {
-            $this->ehlo = $host;
+        if (! $this->domain) {
+            $this->domain = $host;
         }
 
         $this->log("Set: the server");
@@ -127,23 +135,13 @@ class SMTPMailService implements MailService
     /**
      * auth oauthbearer with server
      *
-     * @param string $accessToken
+     * @param string $oauth_token
      */
-    public function setOAuth($accessToken)
+    public function setOAuth($oauth_token)
     {
-        $this->oauthToken = $accessToken;
+        $this->oauth_token = $oauth_token;
 
         $this->log("Set: the auth oauthbearer");
-    }
-
-    /**
-     * set the EHLO message
-     *
-     * @param $ehlo
-     */
-    public function setEhlo($ehlo)
-    {
-        $this->ehlo = $ehlo;
     }
 
     /**
@@ -171,7 +169,7 @@ class SMTPMailService implements MailService
 
         if ($this->username !== null || $this->password !== null) {
             $this->authLogin();
-        } elseif ($this->oauthToken !== null) {
+        } elseif ($this->oauth_token !== null) {
             $this->authOAuthBearer();
         }
 
@@ -244,7 +242,7 @@ class SMTPMailService implements MailService
      */
     protected function ehlo()
     {
-        $in = "EHLO " . $this->ehlo . $this->eol;
+        $in = "EHLO " . $this->domain . $this->eol;
 
         $code = $this->pushStack($in);
 
@@ -305,7 +303,7 @@ class SMTPMailService implements MailService
             chr(1),
             $this->port,
             chr(1),
-            $this->oauthToken,
+            $this->oauth_token,
             chr(1),
             chr(1)
         );
@@ -335,7 +333,7 @@ class SMTPMailService implements MailService
         $authStr = sprintf("user=%s%sauth=Bearer %s%s%s",
             $this->message->getFromEmail(),
             chr(1),
-            $this->oauthToken,
+            $this->oauth_token,
             chr(1),
             chr(1)
         );

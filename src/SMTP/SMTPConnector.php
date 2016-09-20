@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodus\Mail;
+namespace Kodus\Mail\SMTP;
 
 class SMTPConnector
 {
