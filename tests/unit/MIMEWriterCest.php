@@ -8,9 +8,12 @@ use Kodus\Mail\Message;
 use UnitTester;
 
 /**
- * NOTE: all MIME messages have been linted/validated using this online validator:
+ * NOTE: running this test-suite will produce files in the `_output` folder named `mail.*.txt`,
+ *       e.g. one file for each successful test.
  *
- *     http://www.mimevalidator.net/index.html
+ *       All MIME messages have been linted/validated using this online validator:
+ *
+ *           http://www.mimevalidator.net/index.html
  *
  * I'd like to eventually automate MIME validation (and preferably locally) but haven't found the tool to do it.
  */
@@ -18,10 +21,10 @@ class MIMEWriterCest
 {
     const TEXT_BODY                  = "It's me! Rasmus!\r\n\r\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
     const TEXT_BODY_QUOTED_PRINTABLE = "It's me! Rasmus!\r\n\r\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
-    const TEXT_BODY_BASE64           = "SXQncyBtZSEgUmFzbXVzIQoKSSBsb3ZlIGRhbmlzaCBjaGFyYWN0ZXJzLCBsb29rOiDDpsO4w6XD\r\nhsOYw4UhIHdob2EhCgpUYWtlIGNhcmUsIGZyaWVuZC4=";
+    const TEXT_BODY_BASE64           = "SXQncyBtZSEgUmFzbXVzIQ0KDQpJIGxvdmUgZGFuaXNoIGNoYXJhY3RlcnMsIGxvb2s6IMOmw7jD\r\npcOGw5jDhSEgd2hvYSENCg0KVGFrZSBjYXJlLCBmcmllbmQu";
 
-    const HTML_BODY                  = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: æøåÆØÅ! whoa!\n\nTake care, friend.";
-    const HTML_BODY_QUOTED_PRINTABLE = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\n\nTake care, friend.";
+    const HTML_BODY                  = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
+    const HTML_BODY_QUOTED_PRINTABLE = "<strong>It's me! Rasmus!</strong>=0A=0AI love danish characters, look: =C3=\r\n=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
 
     private $last_mime;
 

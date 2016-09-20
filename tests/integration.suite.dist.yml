@@ -1,0 +1,7 @@
+class_name: IntegrationTester
+modules:
+    enabled:
+        - Asserts
+        - Helper\Unit:
+            smtp_host: localhost
+            smtp_port: 8090

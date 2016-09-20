@@ -1,0 +1,21 @@
+{
+    "name": "kodus/mail",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "psr/log": "^1"
+    },
+    "require-dev": {
+        "kodus/test": "^0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kodus\\Mail\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kodus\\Mail\\Test\\Unit\\": "tests/unit/"
+        }
+    }
+}

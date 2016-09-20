@@ -2,6 +2,9 @@
 
 namespace Kodus\Mail;
 
+/**
+ * This class represents an e-mail Message.
+ */
 class Message
 {
     /**
