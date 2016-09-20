@@ -69,7 +69,7 @@ MIME;
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
-            new Address("blub@test.org"),
+            [new Address("blub@test.org"), new Address("zoink@test.org")],
             "Hey, Rasmus!",
             self::TEXT_BODY
         );
@@ -85,7 +85,7 @@ MIME;
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
-From: blub@test.org
+From: blub@test.org, zoink@test.org
 Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
@@ -129,7 +129,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/html; charset=UTF-8
@@ -164,7 +163,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -208,7 +206,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="++++alternative-aaafaf7c286e771e9bd71eacae9f26ae36c9c650++++"
@@ -254,7 +251,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -316,7 +312,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++"
@@ -365,7 +360,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>, Also Rasmus Schultz <also-blip@test.org>
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -397,7 +391,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
-Sender: blub@test.org
 Cc: joe@test.org
 Bcc: bob@test.org
 Subject: Hey, Rasmus!
@@ -429,7 +422,6 @@ MIME;
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
-Sender: blub@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 X-Custom-Header: custom-value

@@ -4,6 +4,9 @@ namespace Kodus\Mail;
 
 /**
  * This class represents an e-mail Message.
+ *
+ * TODO QA: validate subject/text/html fields as UTF-8 encoded? e.g. `preg_match('//u', $value) === 1`
+ * TODO QA: validate text/html fields for CRLF line-breaks? (not required by transport) - or auto-correct line-breaks?
  */
 class Message
 {
@@ -93,6 +96,8 @@ class Message
     }
 
     /**
+     * This field contains the identity of the primary recipients of the Message.
+     *
      * @param Address|Address[] $address
      */
     public function setTo($address)
@@ -121,8 +126,6 @@ class Message
      * of the person(s) or system(s) responsible for the writing of the
      * message.
      *
-     * @see https://www.ietf.org/rfc/rfc0822.txt
-     *
      * @param Address|Address[] $address
      */
     public function setFrom($address)
@@ -147,10 +150,16 @@ class Message
     }
 
     /**
-     * Specifies the mailbox of the agent responsible for the actual
-     * transmission of the message.
+     * Specifies the mailbox of the agent responsible for the actual transmission of the message.
      *
-     * @see https://www.ietf.org/rfc/rfc0822.txt
+     * This field contains the authenticated identity of the "agent" (person, system or process)
+     * that sends the message. It is intended for use when the sender is *not* the author of
+     * the message, or to indicate who among a group of authors actually sent the message.
+     *
+     * If the contents of this field would be completely redundant with the "From" field, then
+     * the "Sender" field need not be present and its use is discouraged, though still permitted.
+     *
+     * In particular, the "Sender" field *must* be present if it is *not* the same as the "From" Field.
      *
      * @param Address|null $sender
      */
@@ -168,6 +177,8 @@ class Message
     }
 
     /**
+     * This field contains the identity of any secondary recipients of the Message.
+     *
      * @param Address|Address[] $address
      */
     public function setCC($address)
@@ -192,6 +203,14 @@ class Message
     }
 
     /**
+     * This field contains the identity of additional recipients of the message.
+     *
+     * The contents of this field are not included in copies of the Message sent to the primary
+     * or secondary recipients, e.g. the "To" and "CC" fields.
+     *
+     * Some systems may choose to include the text of the "BCC" field only in the author's copy,
+     * while others may also include it in the text sent to all those indicated in the "BCC" list.
+     * 
      * @param Address|Address[] $address
      */
     public function setBCC($address)

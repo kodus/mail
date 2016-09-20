@@ -8,15 +8,19 @@ class MIMEWriter extends Writer
     {
         $this->writeHeader("Date", date("r", $message->getDate()));
 
-        $from = $message->getFrom();
-        $sender = $message->getSender() ?: $from[0];
-
         $this->writeAddressHeader("To", $message->getTo());
-        $this->writeAddressHeader("From", $from);
-        $this->writeAddressHeader("Sender", [$sender]);
+        $this->writeAddressHeader("From", $message->getFrom());
         $this->writeAddressHeader("Cc", $message->getCC());
         $this->writeAddressHeader("Bcc", $message->getBCC());
         $this->writeAddressHeader("Reply-To", $message->getReplyTo());
+
+        if ($message->getSender()) {
+            $this->writeAddressHeader("Sender", [$message->getSender()]);
+        } elseif (count($message->getFrom()) > 1) {
+            $from = $message->getFrom();
+
+            $this->writeAddressHeader("Sender", [$from[0]]);
+        }
 
         $this->writeHeader("Subject", $message->getSubject());
 
