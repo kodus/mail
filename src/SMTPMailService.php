@@ -4,6 +4,11 @@ namespace Kodus\Mail;
 
 use Psr\Log\LoggerInterface;
 
+/**
+ * This Mail Service implementation delivers Messages directly to an SMTP server.
+ *
+ * It will block the script while connecting and delivering the Message.
+ */
 class SMTPMailService implements MailService
 {
     /**
@@ -66,14 +71,14 @@ class SMTPMailService implements MailService
      *
      * @var array
      */
-    protected $commandStack = [];
+    protected $command_stack = [];
 
     /**
      * Stack of all results issued to SMTP
      *
      * @var array
      */
-    protected $resultStack = [];
+    protected $result_stack = [];
 
     /**
      * @see http://www.php-fig.org/psr/psr-3/
@@ -91,20 +96,18 @@ class SMTPMailService implements MailService
      * @param string $host   server
      * @param int    $port   port
      * @param string $secure ssl tls
-     *
-     * @return $this
      */
     public function setServer($host, $port, $secure = null)
     {
         $this->host = $host;
         $this->port = $port;
         $this->secure = $secure;
+
         if (! $this->ehlo) {
             $this->ehlo = $host;
         }
-        $this->log("Set: the server");
 
-        return $this;
+        $this->log("Set: the server");
     }
 
     /**
@@ -112,45 +115,35 @@ class SMTPMailService implements MailService
      *
      * @param string $username
      * @param string $password
-     *
-     * @return $this
      */
     public function setAuth($username, $password)
     {
         $this->username = $username;
         $this->password = $password;
-        $this->log("Set: the auth login");
 
-        return $this;
+        $this->log("Set: the auth login");
     }
 
     /**
      * auth oauthbearer with server
      *
      * @param string $accessToken
-     *
-     * @return $this
      */
     public function setOAuth($accessToken)
     {
         $this->oauthToken = $accessToken;
-        $this->log("Set: the auth oauthbearer");
 
-        return $this;
+        $this->log("Set: the auth oauthbearer");
     }
 
     /**
      * set the EHLO message
      *
      * @param $ehlo
-     *
-     * @return $this
      */
     public function setEhlo($ehlo)
     {
         $this->ehlo = $ehlo;
-
-        return $this;
     }
 
     /**
@@ -158,7 +151,6 @@ class SMTPMailService implements MailService
      *
      * @param Message $message
      *
-     * @return bool
      * @throws CodeException
      * @throws CryptoException
      * @throws SMTPException
@@ -166,58 +158,64 @@ class SMTPMailService implements MailService
     public function send(Message $message)
     {
         $this->log('Set: a message will be sent');
+
         $this->message = $message;
-        $this->connect()
-            ->ehlo();
+
+        $this->connect();
+        $this->ehlo();
 
         if ($this->secure === 'tls') {
-            $this->starttls()
-                ->ehlo();
+            $this->starttls();
+                $this->ehlo();
         }
+
         if ($this->username !== null || $this->password !== null) {
             $this->authLogin();
         } elseif ($this->oauthToken !== null) {
             $this->authOAuthBearer();
         }
-        $this->mailFrom()
-            ->rcptTo()
-            ->data()
-            ->quit();
 
-        return fclose($this->smtp);
+        $this->mailFrom();
+        $this->rcptTo();
+        $this->data();
+        $this->quit();
+
+        fclose($this->smtp);
     }
 
     /**
      * connect the server
      * SUCCESS 220
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function connect()
     {
         $this->log("Connecting to {$this->host} at {$this->port}");
+
         $host = ($this->secure == 'ssl') ? 'ssl://' . $this->host : $this->host;
+
         $this->smtp = @fsockopen($host, $this->port);
-        //set block mode
-        //    stream_set_blocking($this->smtp, 1);
+
+        // TODO use blocking mode?
+        // stream_set_blocking($this->smtp, 1);
+
         if (! $this->smtp) {
             throw new SMTPException("Could not open SMTP Port.");
         }
-        $code = $this->getCode();
-        if ($code !== '220') {
-            throw new CodeException('220', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $code = $this->getCode();
+
+        if ($code !== '220') {
+            throw new CodeException('220', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP STARTTLS
      * SUCCESS 220
      *
-     * @return $this
      * @throws CodeException
      * @throws CryptoException
      * @throws SMTPException
@@ -225,34 +223,34 @@ class SMTPMailService implements MailService
     protected function starttls()
     {
         $in = "STARTTLS" . $this->eol;
+
         $code = $this->pushStack($in);
+
         if ($code !== '220') {
-            throw new CodeException('220', $code, array_pop($this->resultStack));
+            throw new CodeException('220', $code, array_pop($this->result_stack));
         }
+
         if (! \stream_socket_enable_crypto($this->smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
             throw new CryptoException("Start TLS failed to enable crypto");
         }
-
-        return $this;
     }
 
     /**
      * SMTP EHLO
      * SUCCESS 250
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function ehlo()
     {
         $in = "EHLO " . $this->ehlo . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '250') {
-            throw new CodeException('250', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $code = $this->pushStack($in);
+
+        if ($code !== '250') {
+            throw new CodeException('250', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
@@ -261,36 +259,40 @@ class SMTPMailService implements MailService
      * SUCCESS 334
      * SUCCESS 235
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function authLogin()
     {
         $in = "AUTH LOGIN" . $this->eol;
+
         $code = $this->pushStack($in);
+
         if ($code !== '334') {
-            throw new CodeException('334', $code, array_pop($this->resultStack));
-        }
-        $in = base64_encode($this->username) . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '334') {
-            throw new CodeException('334', $code, array_pop($this->resultStack));
-        }
-        $in = base64_encode($this->password) . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '235') {
-            throw new CodeException('235', $code, array_pop($this->resultStack));
+            throw new CodeException('334', $code, array_pop($this->result_stack));
         }
 
-        return $this;
+        $in = base64_encode($this->username) . $this->eol;
+
+        $code = $this->pushStack($in);
+
+        if ($code !== '334') {
+            throw new CodeException('334', $code, array_pop($this->result_stack));
+        }
+
+        $in = base64_encode($this->password) . $this->eol;
+
+        $code = $this->pushStack($in);
+
+        if ($code !== '235') {
+            throw new CodeException('235', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP AUTH OAUTHBEARER
      * SUCCESS 235
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
@@ -307,26 +309,29 @@ class SMTPMailService implements MailService
             chr(1),
             chr(1)
         );
-        $authStr = base64_encode($authStr);
-        $in = "AUTH OAUTHBEARER $authStr" . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '235') {
-            throw new CodeException('235', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $authStr = base64_encode($authStr);
+
+        $in = "AUTH OAUTHBEARER $authStr" . $this->eol;
+
+        $code = $this->pushStack($in);
+
+        if ($code !== '235') {
+            throw new CodeException('235', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP AUTH XOAUTH2
      * SUCCESS 235
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function authXOAuth2()
     {
+        // TODO this method is unused - add support for OAUTH 2.0 authentication?
+
         $authStr = sprintf("user=%s%sauth=Bearer %s%s%s",
             $this->message->getFromEmail(),
             chr(1),
@@ -334,40 +339,40 @@ class SMTPMailService implements MailService
             chr(1),
             chr(1)
         );
-        $authStr = base64_encode($authStr);
-        $in = "AUTH XOAUTH2 $authStr" . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '235') {
-            throw new CodeException('235', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $authStr = base64_encode($authStr);
+
+        $in = "AUTH XOAUTH2 $authStr" . $this->eol;
+
+        $code = $this->pushStack($in);
+
+        if ($code !== '235') {
+            throw new CodeException('235', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP MAIL FROM
      * SUCCESS 250
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function mailFrom()
     {
         $in = "MAIL FROM:<{$this->message->getFromEmail()}>" . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '250') {
-            throw new CodeException('250', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $code = $this->pushStack($in);
+
+        if ($code !== '250') {
+            throw new CodeException('250', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP RCPT TO
      * SUCCESS 250
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
@@ -382,11 +387,9 @@ class SMTPMailService implements MailService
             $in = "RCPT TO:<" . $toEmail . ">" . $this->eol;
             $code = $this->pushStack($in);
             if ($code !== '250') {
-                throw new CodeException('250', $code, array_pop($this->resultStack));
+                throw new CodeException('250', $code, array_pop($this->result_stack));
             }
         }
-
-        return $this;
     }
 
     /**
@@ -394,49 +397,57 @@ class SMTPMailService implements MailService
      * SUCCESS 354
      * SUCCESS 250
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function data()
     {
         $in = "DATA" . $this->eol;
+
         $code = $this->pushStack($in);
+
         if ($code !== '354') {
-            throw new CodeException('354', $code, array_pop($this->resultStack));
-        }
-        $in = $this->message->toString();
-        $code = $this->pushStack($in);
-        if ($code !== '250') {
-            throw new CodeException('250', $code, array_pop($this->resultStack));
+            throw new CodeException('354', $code, array_pop($this->result_stack));
         }
 
-        return $this;
+        $in = $this->message->toString();
+
+        $code = $this->pushStack($in);
+
+        if ($code !== '250') {
+            throw new CodeException('250', $code, array_pop($this->result_stack));
+        }
     }
 
     /**
      * SMTP QUIT
      * SUCCESS 221
      *
-     * @return $this
      * @throws CodeException
      * @throws SMTPException
      */
     protected function quit()
     {
         $in = "QUIT" . $this->eol;
-        $code = $this->pushStack($in);
-        if ($code !== '221') {
-            throw new CodeException('221', $code, array_pop($this->resultStack));
-        }
 
-        return $this;
+        $code = $this->pushStack($in);
+
+        if ($code !== '221') {
+            throw new CodeException('221', $code, array_pop($this->result_stack));
+        }
     }
 
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
     protected function pushStack($string)
     {
-        $this->commandStack[] = $string;
-        fputs($this->smtp, $string, strlen($string));
+        $this->command_stack[] = $string;
+
+        fwrite($this->smtp, $string, strlen($string));
+
         $this->log('Sent: ' . $string);
 
         return $this->getCode();
@@ -453,13 +464,16 @@ class SMTPMailService implements MailService
     {
         while ($str = fgets($this->smtp, 515)) {
             $this->log("Got: " . $str);
-            $this->resultStack[] = $str;
+
+            $this->result_stack[] = $str;
+
             if (substr($str, 3, 1) == " ") {
                 $code = substr($str, 0, 3);
 
                 return $code;
             }
         }
+
         throw new SMTPException("SMTP Server did not respond with anything I recognized");
     }
 
