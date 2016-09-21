@@ -14,12 +14,19 @@ class MIMEWriter extends Writer
         $this->writeAddressHeader("Bcc", $message->getBCC());
         $this->writeAddressHeader("Reply-To", $message->getReplyTo());
 
-        if ($message->getSender()) {
-            $this->writeAddressHeader("Sender", [$message->getSender()]);
-        } elseif (count($message->getFrom()) > 1) {
+        $sender = $message->getSender();
+
+        if ($sender) {
+            $this->writeAddressHeader("Sender", [$sender]);
+        } else {
             $from = $message->getFrom();
 
-            $this->writeAddressHeader("Sender", [$from[0]]);
+            if (count($from) > 1) {
+                $this->writeAddressHeader("Sender", [$from[0]]);
+            } else {
+                // The contents of this field would be completely redundant with the "From" field.
+                // The "Sender" field need not be present, and its use is discouraged - it's therefore left out.
+            }
         }
 
         $this->writeHeader("Subject", $message->getSubject());
