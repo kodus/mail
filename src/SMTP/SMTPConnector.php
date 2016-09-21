@@ -2,18 +2,17 @@
 
 namespace Kodus\Mail\SMTP;
 
-class SMTPConnector
+/**
+ * An SMTP Connector is responsible for the creation of an SMTP Client, and performing
+ * the initial handshake with the SMTP server to ensure that the host at the other end
+ * is actually an SMTP server.
+ */
+interface SMTPConnector
 {
-    public function __construct()
-    {
-        // TODO
-    }
-
     /**
-     * @return resource SMTP connection handle
+     * @param string $client_domain
+     *
+     * @return SMTPClient open SMTP client, post-handshake, awaiting commands
      */
-    public function connect()
-    {
-        // TODO
-    }
+    public function connect($client_domain);
 }
