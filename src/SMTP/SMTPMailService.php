@@ -456,15 +456,13 @@ class SMTPMailService implements MailService
      */
     protected function readCode()
     {
-        while ($str = fgets($this->smtp, 515)) {
-            $this->log("Got: " . $str);
+        while ($line = fgets($this->smtp, 4096)) {
+            $this->log("Got: " . $line);
 
-            $this->result_stack[] = $str;
+            $this->result_stack[] = $line;
 
-            if (substr($str, 3, 1) == " ") {
-                $code = substr($str, 0, 3);
-
-                return $code;
+            if (preg_match('/^\d\d\d /', $line) === 1) {
+                return substr($line, 0, 3);
             }
         }
 
