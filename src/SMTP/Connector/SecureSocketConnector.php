@@ -20,11 +20,7 @@ class SecureSocketConnector extends SocketConnector
     {
         $client = parent::connect($client_domain);
 
-        $code = $client->writeCommand("STARTTLS");
-
-        if ($code !== '220') {
-            throw new CodeException('220', $code, array_pop($this->resultStack));
-        }
+        $client->writeCommand("STARTTLS", "220");
 
         if (! \stream_socket_enable_crypto($this->smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
             throw new CryptoException("Start TLS failed to enable crypto");

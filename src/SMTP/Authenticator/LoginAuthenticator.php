@@ -32,22 +32,8 @@ class LoginAuthenticator implements SMTPAuthenticator
 
     public function authenticate(SMTPClient $client)
     {
-        $code = $client->writeCommand("AUTH LOGIN", "334");
-
-        if ($code !== '334') {
-            throw new CodeException('334', $code, $client->getLastResult());
-        }
-
-        $code = $client->writeCommand(base64_encode($this->username));
-
-        if ($code !== '334') {
-            throw new CodeException('334', $code, $client->getLastResult());
-        }
-
-        $code = $client->writeCommand(base64_encode($this->password));
-
-        if ($code !== '235') {
-            throw new CodeException('235', $code, $client->getLastResult());
-        }
+        $client->writeCommand("AUTH LOGIN", "334");
+        $client->writeCommand(base64_encode($this->username), "334");
+        $client->writeCommand(base64_encode($this->password), "235");
     }
 }

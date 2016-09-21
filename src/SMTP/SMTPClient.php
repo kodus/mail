@@ -88,18 +88,14 @@ class SMTPClient
      */
     public function ehlo($client_domain)
     {
-        $code = $this->writeCommand("EHLO {$client_domain}");
-
-        if ($code !== '250') {
-            throw new CodeException('250', $code, $this->getLastResult());
-        }
+        $this->writeCommand("EHLO {$client_domain}", "250");
     }
 
     /**
      * Write an SMTP command (with EOL) to the SMTP socket, and read the status code.
      *
      * @param string      $command
-     * @param string|null $expected_code
+     * @param string|null $expected_code optional expected response status-code
      *
      * @return string SMTP status code
      */
@@ -136,11 +132,7 @@ class SMTPClient
      */
     protected function mailFrom()
     {
-        $code = $this->writeCommand("MAIL FROM:<{$this->message->getFromEmail()}>");
-
-        if ($code !== '250') {
-            throw new CodeException('250', $code, $this->getLastResult());
-        }
+        $this->writeCommand("MAIL FROM:<{$this->message->getFromEmail()}>", "250");
     }
 
     /**
@@ -159,12 +151,7 @@ class SMTPClient
         );
 
         foreach ($to as $toEmail => $_) {
-
-            $code = $this->writeCommand("RCPT TO:<{$toEmail}>");
-
-            if ($code !== '250') {
-                throw new CodeException('250', $code, $this->getLastResult());
-            }
+            $this->writeCommand("RCPT TO:<{$toEmail}>", "250");
         }
     }
 
@@ -178,11 +165,7 @@ class SMTPClient
      */
     protected function data()
     {
-        $this->writeCommand("DATA");
-
-        if ($code !== '354') {
-            throw new CodeException('354', $code, $this->getLastResult());
-        }
+        $this->writeCommand("DATA", "354");
 
         $in = $this->message->toString(); // TODO integrate MIMEWriter
 
@@ -204,11 +187,7 @@ class SMTPClient
      */
     protected function quit()
     {
-        $code = $this->writeCommand("QUIT");
-
-        if ($code !== '221') {
-            throw new CodeException('221', $code, $this->getLastResult());
-        }
+        $this->writeCommand("QUIT", "221");
     }
 
     /**
