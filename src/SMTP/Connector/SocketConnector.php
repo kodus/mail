@@ -4,6 +4,7 @@ namespace Kodus\Mail\SMTP\Connector;
 
 use Kodus\Mail\SMTP\SMTPClient;
 use Kodus\Mail\SMTP\SMTPConnector;
+use Kodus\Mail\SMTP\SMTPException;
 
 class SocketConnector implements SMTPConnector
 {
@@ -38,9 +39,7 @@ class SocketConnector implements SMTPConnector
             throw new SMTPException("Could not open SMTP Port.");
         }
 
-        $client = new SMTPClient($socket);
-
-        $client->handshake($client_domain);
+        $client = new SMTPClient($socket, $client_domain);
 
         return $client;
     }

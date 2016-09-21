@@ -4,6 +4,7 @@ namespace Kodus\Mail\SMTP;
 
 use Kodus\Mail\MailService;
 use Kodus\Mail\Message;
+use Kodus\Mail\MIMEWriter;
 
 /**
  * This Mail Service implementation delivers Messages directly to an SMTP server.
@@ -45,6 +46,64 @@ class SMTPMailService implements MailService
 
         $this->authenticator->authenticate($client);
 
-        $client->writeMessage($message);
+        $client->sendMail(
+            $this->getSender($message),
+            $this->getRecipients($message),
+            function ($socket) use ($message) {
+                $writer = new MIMEWriter($socket);
+
+                $writer->writeMessage($message);
+            }
+        );
+
+        // TODO persist the SMTP connection between calls to send() ?
+
+        unset($client);
+    }
+
+    /**
+     * Determine the sender e-mail address from the "Sender" or first "From" field of the Message
+     *
+     * @param Message $message
+     *
+     * @return string sender e-mail address
+     */
+    private function getSender(Message $message)
+    {
+        $sender = $message->getSender();
+
+        if ($sender) {
+            return $sender->getEmail();
+        }
+
+        $from = $message->getFrom();
+
+        return $from[0]->getEmail();
+    }
+
+    /**
+     * Extract recipient e-mail addresses from the "To", "CC" and "BCC" fields of the Message
+     *
+     * @param Message $message
+     *
+     * @return string[] list of recipient e-mail addresses
+     */
+    private function getRecipients(Message $message)
+    {
+        $recipients = [];
+
+        foreach ($message->getTo() as $recipient) {
+            $recipients[] = $recipient->getEmail();
+        }
+
+        foreach ($message->getCC() as $recipient) {
+            $recipients[] = $recipient->getEmail();
+        }
+
+        foreach ($message->getBCC() as $recipient) {
+            $recipients[] = $recipient->getEmail();
+        }
+
+        return $recipients;
     }
 }

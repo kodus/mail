@@ -142,11 +142,21 @@ class Message
     }
 
     /**
+     * Return the Sender
+     *
      * @return Address|null
      */
     public function getSender()
     {
-        return $this->sender;
+        if ($this->sender) {
+            return $this->sender;
+        }
+
+        if (count($this->from) > 1) {
+            return $this->from[0];
+        }
+
+        return null;
     }
 
     /**

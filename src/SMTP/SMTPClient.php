@@ -2,7 +2,6 @@
 
 namespace Kodus\Mail\SMTP;
 
-use Kodus\Mail\Message;
 use Psr\Log\LoggerInterface;
 
 class SMTPClient
@@ -38,14 +37,22 @@ class SMTPClient
 
     /**
      * @param resource $socket SMTP socket
+     * @param string   $client_domain
      */
-    public function __construct($socket)
+    public function __construct($socket, $client_domain)
     {
         $this->socket = $socket;
+
+        $this->doHandshake($client_domain);
     }
 
+    /**
+     * Send the `QUIT` command and close the SMTP socket
+     */
     public function __destruct()
     {
+        $this->sendCommand("QUIT", "221");
+
         fclose($this->socket);
     }
 
@@ -60,35 +67,29 @@ class SMTPClient
     }
 
     /**
-     * Read the welcome message from the SMTP server, and send an EHLO command.
-     *
-     * Connectors call this method to perform the initial handshake with an SMTP server.
+     * Send the `EHLO` command and checks the response
      *
      * @param string $client_domain
      */
-    public function handshake($client_domain)
+    public function sendEHLO($client_domain)
     {
-        $code = $this->readCode();
-
-        if ($code !== '220') {
-            throw new CodeException('220', $code, $this->getLastResult());
-        }
-
-        $this->ehlo($client_domain);
+        $this->sendCommand("EHLO {$client_domain}", "250");
     }
 
     /**
-     * SMTP EHLO
-     * SUCCESS 250
+     * Send the `STARTTLS` command and initialize stream socket encryption.
      *
-     * @param string $client_domain
+     * @param int $crypto_method one of the STREAM_CRYPTO_METHOD_* constants (defined by PHP)
      *
-     * @throws CodeException
-     * @throws SMTPException
+     * @throws SMTPException on failure
      */
-    public function ehlo($client_domain)
+    public function sendSTARTTLS($crypto_method)
     {
-        $this->writeCommand("EHLO {$client_domain}", "250");
+        $this->sendCommand("STARTTLS", "220");
+
+        if (! stream_socket_enable_crypto($this->socket, true, $crypto_method)) {
+            throw new SMTPException("STARTTLS failed to enable crypto-method: {$crypto_method}");
+        }
     }
 
     /**
@@ -98,8 +99,10 @@ class SMTPClient
      * @param string|null $expected_code optional expected response status-code
      *
      * @return string SMTP status code
+     *
+     * @throws CodeException
      */
-    public function writeCommand($command, $expected_code = null)
+    public function sendCommand($command, $expected_code = null)
     {
         $this->write("{$command}{$this->eol}");
 
@@ -113,95 +116,78 @@ class SMTPClient
     }
 
     /**
-     * @param Message $message
+     * @param string   $sender     sender e-mail address
+     * @param string[] $recipients list of recipient e-mail addresses
+     * @param callable $write      function (resource $resouce) : void
      */
-    public function writeMessage(Message $message)
+    public function sendMail($sender, array $recipients, callable $write)
     {
-        $this->mailFrom();
-        $this->rcptTo();
-        $this->data();
-        $this->quit();
+        $this->sendMailFromCommand($sender);
+        $this->sendRecipientCommands($recipients);
+        $this->sendDataCommands($write);
     }
 
     /**
-     * SMTP MAIL FROM
-     * SUCCESS 250
+     * Read the welcome message from the SMTP server, and send an EHLO command.
      *
-     * @throws CodeException
-     * @throws SMTPException
+     * Connectors call this method to perform the initial handshake with an SMTP server.
+     *
+     * @param string $client_domain
+     *
+     * @throws CodeException on failed handshake
      */
-    protected function mailFrom()
+    protected function doHandshake($client_domain)
     {
-        $this->writeCommand("MAIL FROM:<{$this->message->getFromEmail()}>", "250");
+        $code = $this->readCode();
+
+        if ($code !== '220') {
+            throw new CodeException('220', $code, $this->getLastResult());
+        }
+
+        $this->sendEHLO($client_domain);
     }
 
     /**
-     * SMTP RCPT TO
-     * SUCCESS 250
+     * Send the `MAIL FROM` command and check the response
      *
-     * @throws CodeException
-     * @throws SMTPException
+     * @param string $sender sender e-mail address
      */
-    protected function rcptTo()
+    protected function sendMailFromCommand($sender)
     {
-        $to = array_merge(
-            $this->message->getTo(),
-            $this->message->getCc(),
-            $this->message->getBcc()
-        );
+        $this->sendCommand("MAIL FROM:<{$sender}>", "250");
+    }
 
-        foreach ($to as $toEmail => $_) {
-            $this->writeCommand("RCPT TO:<{$toEmail}>", "250");
+    /**
+     * Send a series of `RCPT TO` commands and check each response
+     *
+     * @param string[] $recipients list of recipient e-mail addresses
+     */
+    protected function sendRecipientCommands(array $recipients)
+    {
+        foreach ($recipients as $recipient) {
+            $this->sendCommand("RCPT TO:<{$recipient}>", "250");
         }
     }
 
     /**
-     * SMTP DATA
-     * SUCCESS 354
-     * SUCCESS 250
+     * Send the `DATA` command, expose the filtered stream to a callback for writing
+     * the data, terminate the data-stream, and check the response.
      *
-     * @throws CodeException
+     * @param callable $write function (resource $resouce) : void
+     *
      * @throws SMTPException
      */
-    protected function data()
+    protected function sendDataCommands(callable $write)
     {
-        $this->writeCommand("DATA", "354");
+        $this->sendCommand("DATA", "354");
 
-        $in = $this->message->toString(); // TODO integrate MIMEWriter
+        $filter = stream_filter_append($this->socket, SMTPDotStuffingFilter::FILTER_NAME, STREAM_FILTER_WRITE);
 
-        $code = $this->write($in);
+        $write($this->socket);
 
-        // TODO terminate data with "." CRLF
+        stream_filter_remove($filter);
 
-        if ($code !== '250') {
-            throw new CodeException('250', $code, $this->getLastResult());
-        }
-    }
-
-    /**
-     * SMTP QUIT
-     * SUCCESS 221
-     *
-     * @throws CodeException
-     * @throws SMTPException
-     */
-    protected function quit()
-    {
-        $this->writeCommand("QUIT", "221");
-    }
-
-    /**
-     * Write raw data to the SMTP socket
-     *
-     * @param string $data
-     */
-    protected function write($data)
-    {
-        $this->command_stack[] = $data;
-
-        fwrite($this->socket, $data, strlen($data));
-
-        $this->log('Sent: ' . $data);
+        $this->sendCommand("{$this->eol}.{$this->eol}", "250");
     }
 
     /**
@@ -224,6 +210,20 @@ class SMTPClient
         }
 
         throw new SMTPException("SMTP Server did not respond with anything I recognized");
+    }
+
+    /**
+     * Write raw data to the SMTP socket
+     *
+     * @param string $data
+     */
+    protected function write($data)
+    {
+        $this->command_stack[] = $data;
+
+        fwrite($this->socket, $data, strlen($data));
+
+        $this->log('Sent: ' . $data);
     }
 
     /**
