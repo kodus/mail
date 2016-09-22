@@ -2,9 +2,8 @@
 
 namespace Kodus\Mail\Test\Unit;
 
-use Kodus\Mail\Address;
-use Kodus\Mail\Attachment;
 use Kodus\Mail\Message;
+use Kodus\Mail\Test\TestMessageFactory;
 use UnitTester;
 
 /**
@@ -19,14 +18,17 @@ use UnitTester;
  */
 class MIMEWriterCest
 {
-    const TEXT_BODY                  = "It's me! Rasmus!\r\n\r\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
-    const TEXT_BODY_QUOTED_PRINTABLE = "It's me! Rasmus!\r\n\r\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
-    const TEXT_BODY_BASE64           = "SXQncyBtZSEgUmFzbXVzIQ0KDQpJIGxvdmUgZGFuaXNoIGNoYXJhY3RlcnMsIGxvb2s6IMOmw7jD\r\npcOGw5jDhSEgd2hvYSENCg0KVGFrZSBjYXJlLCBmcmllbmQu";
-
-    const HTML_BODY                  = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
-    const HTML_BODY_QUOTED_PRINTABLE = "<strong>It's me! Rasmus!</strong>=0A=0AI love danish characters, look: =C3=\r\n=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
-
     private $last_mime;
+
+    /**
+     * @var TestMessageFactory
+     */
+    private $factory;
+
+    public function __construct()
+    {
+        $this->factory = new TestMessageFactory();
+    }
 
     public function _after(UnitTester $I)
     {
@@ -35,18 +37,9 @@ class MIMEWriterCest
 
     public function writeTextMessage(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            self::TEXT_BODY
-        );
+        $message = $this->factory->createTextMessage();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
-
-        $quoted_body = self::TEXT_BODY_QUOTED_PRINTABLE;
-
-        $message->setSender(new Address("someone-else@test.org"));
+        $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -67,20 +60,11 @@ MIME;
 
     public function writeTextMessageWithAttachment(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
-            [new Address("blub@test.org"), new Address("zoink@test.org")],
-            "Hey, Rasmus!",
-            self::TEXT_BODY
-        );
+        $message = $this->factory->createTextMessageWithAttachment();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+        $encoded_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
 
-        $message->addAttachment(new Attachment(file_get_contents(__DIR__ . "/kitten.jpg"), "kitten.jpg", "image/jpeg"));
-
-        $encoded_attachment = file_get_contents(__DIR__ . "/kitten.base64.txt");
-
-        $quoted_body = self::TEXT_BODY_QUOTED_PRINTABLE;
+        $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -113,17 +97,9 @@ MIME;
 
     public function writeHTMLMessage(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            null,
-            self::HTML_BODY
-        );
+        $message = $this->factory->createHTMLMessage();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
-
-        $quoted_body = self::HTML_BODY_QUOTED_PRINTABLE;
+        $quoted_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -143,21 +119,11 @@ MIME;
 
     public function writeHTMLMessageWithAttachment(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            null,
-            self::HTML_BODY
-        );
+        $message = $this->factory->createHTMLMessageWithAttachment();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+        $encoded_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
 
-        $message->addAttachment(new Attachment(file_get_contents(__DIR__ . "/kitten.jpg"), "kitten.jpg", "image/jpeg"));
-
-        $encoded_attachment = file_get_contents(__DIR__ . "/kitten.base64.txt");
-
-        $quoted_body = self::HTML_BODY_QUOTED_PRINTABLE;
+        $quoted_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -189,18 +155,10 @@ MIME;
 
     public function writeTextAndHTMLMessage(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            self::TEXT_BODY,
-            self::HTML_BODY
-        );
+        $message = $this->factory->createTextAndHTMLMessage();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
-
-        $quoted_text = self::TEXT_BODY_QUOTED_PRINTABLE;
-        $quoted_html = self::HTML_BODY_QUOTED_PRINTABLE;
+        $quoted_text = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
+        $quoted_html = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -229,23 +187,13 @@ MIME;
 
     public function writeTextAndHTMLMessageWithAttachment(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus åh Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            self::TEXT_BODY,
-            self::HTML_BODY
-        );
+        $message = $this->factory->createTextAndHTMLMessageWithAttachment();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+        $encoded_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
 
-        $message->addAttachment(Attachment::fromFile(__DIR__ . "/kitten.jpg"));
+        $quoted_text_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $encoded_attachment = file_get_contents(__DIR__ . "/kitten.base64.txt");
-
-        $quoted_text_body = self::TEXT_BODY_QUOTED_PRINTABLE;
-
-        $quoted_html_body = self::HTML_BODY_QUOTED_PRINTABLE;
+        $quoted_html_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -289,24 +237,13 @@ MIME;
         // NOTE: this test also covers use of the Attachment::fromFile() factory method
         //       as well as constructing an Attachment instance using string content
 
-        $message = new Message(
-            new Address("blip@test.org", "Rasmus Schultz"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            self::TEXT_BODY
-        );
+        $message = $this->factory->createMessageWithMultipleAttachments();
 
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+        $encoded_first_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
 
-        $message->addAttachment(Attachment::fromFile(__DIR__ . '/kitten.jpg'));
+        $encoded_second_attachment = TestMessageFactory::TEXT_BODY_BASE64;
 
-        $encoded_first_attachment = file_get_contents(__DIR__ . "/kitten.base64.txt");
-
-        $message->addAttachment(new Attachment(self::TEXT_BODY, "hello.txt", "text/plain"));
-
-        $encoded_second_attachment = self::TEXT_BODY_BASE64;
-
-        $quoted_body = self::TEXT_BODY_QUOTED_PRINTABLE;
+        $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -344,17 +281,7 @@ MIME;
 
     public function writeMessageWithMultipleRecipients(UnitTester $I)
     {
-        $message = new Message(
-            [
-                new Address("blip@test.org", "Rasmus Schultz"),
-                new Address("also-blip@test.org", "Also Rasmus Schultz")
-            ],
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            "Hello!"
-        );
-
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+        $message = $this->factory->createMessageWithMultipleRecipients();
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -374,18 +301,7 @@ MIME;
 
     public function writeMessageWithCCAndBCCRecipients(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            "Hello!"
-        );
-
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
-
-        $message->addCC(new Address("joe@test.org"));
-
-        $message->addBCC(new Address("bob@test.org"));
+        $message = $this->factory->createMessageWithCCAndBCCRecipients();
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
@@ -407,16 +323,7 @@ MIME;
 
     public function writeMessageWithCustomHeaders(UnitTester $I)
     {
-        $message = new Message(
-            new Address("blip@test.org"),
-            new Address("blub@test.org"),
-            "Hey, Rasmus!",
-            "Hello!"
-        );
-
-        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
-
-        $message->addHeader("X-Custom-Header", "custom-value");
+        $message = $this->factory->createMessageWithCustomHeaders();
 
         $expected_mime = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
