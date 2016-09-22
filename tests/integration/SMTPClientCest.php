@@ -21,9 +21,9 @@ class SMTPClientCest
 
         $mime_message = <<<MIME
 Date: Thu, 15 Sep 2016 17:20:54 +0200
-To: blip@test.org
+To: =?utf-8?q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
-Subject: Hey, Foo!
+Subject: =?UTF-8?Q?Hey, Rasmus! I like =C3=86=C3=98=C3=85=C3=A6=C3=B8=C3=A5!?=
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable

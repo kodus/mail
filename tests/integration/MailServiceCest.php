@@ -3,30 +3,32 @@
 namespace Kodus\Mail\Test\Integration;
 
 use IntegrationTester;
-use Kodus\Mail\Address;
-use Kodus\Mail\Message;
+use Kodus\Mail\SMTP\Authenticator\NoAuthenticator;
 use Kodus\Mail\SMTP\SMTPMailService;
+use Kodus\Mail\Test\TestMessageFactory;
 
 class MailServiceCest
 {
     /**
-     * In this test, we connect using a plain socket and plain login authentication.
+     * In this test, we connect using a plain socket without login authentication, then
+     * attempt to send every kind of test-message implemented by the Test Message Factory.
      */
     public function sendMail(IntegrationTester $I)
     {
+        $factory = new TestMessageFactory();
+
         $client_domain = "localhost";
 
         $service = new SMTPMailService(
-            $I->createSocketConnector(), $I->createLoginAuthenticator(), $client_domain
+            $I->createSocketConnector(), new NoAuthenticator(), $client_domain
         );
 
-        $message = new Message(
-            new Address("to-foo@test.org"),
-            new Address("from-bar@test.org"),
-            "Hello, Bar!",
-            "Hey Bar!\n\nIt's been a long time!\n\nHow you been, bro?\n\n"
-        );
+        $messages = $factory->createAllMessageTypes();
 
-        $service->send($message);
+        foreach ($messages as $type => $message) {
+            $I->amGoingTo("send a message of this type: {$type}");
+
+            $service->send($message);
+        }
     }
 }

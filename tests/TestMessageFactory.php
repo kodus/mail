@@ -43,7 +43,7 @@ class TestMessageFactory
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
             new Address("blub@test.org"),
-            "Hey, Rasmus!",
+            "Hey, Rasmus! I like ÆØÅæøå!",
             self::TEXT_BODY
         );
 
@@ -157,7 +157,7 @@ class TestMessageFactory
 
         $message->addAttachment(Attachment::fromFile($this->getFixturePath('kitten.jpg')));
 
-        $message->addAttachment(new Attachment(self::TEXT_BODY, "hello.txt", "text/plain"));
+        $message->addAttachment(new Attachment(self::TEXT_BODY, "hello.txt", "text/plain; charset=UTF-8"));
 
         return $message;
     }
@@ -220,5 +220,21 @@ class TestMessageFactory
         $message->addHeader("X-Custom-Header", "custom-value");
 
         return $message;
+    }
+
+    /**
+     * @return Message[]
+     */
+    public function createAllMessageTypes()
+    {
+        $messages = [];
+
+        foreach (get_class_methods(__CLASS__) as $method) {
+            if ($method !== __FUNCTION__ && preg_match("/^create/", $method) === 1) {
+                $messages[substr($method, 6)] = $this->$method();
+            }
+        }
+
+        return $messages;
     }
 }
