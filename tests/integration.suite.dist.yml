@@ -2,6 +2,15 @@ class_name: IntegrationTester
 modules:
     enabled:
         - Asserts
-        - Helper\Unit:
+        - Helper\Unit
+        - Helper\Integration:
+            # plain connection settings:
             smtp_host: localhost
-            smtp_port: 8090
+            smtp_port: 25
+            # SSL connection settings:
+            smtp_ssl_host: localhost
+            smtp_ssl_port: 465
+            smtp_ssl_crypto: STREAM_CRYPTO_METHOD_TLS_CLIENT
+            # authentication settings:
+            smtp_username: root
+            smtp_password: root

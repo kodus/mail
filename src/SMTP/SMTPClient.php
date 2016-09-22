@@ -37,13 +37,18 @@ class SMTPClient
 
     /**
      * @param resource $socket SMTP socket
-     * @param string   $client_domain
+     *
+     * @throws CodeException on missing welcome message
      */
-    public function __construct($socket, $client_domain)
+    public function __construct($socket)
     {
         $this->socket = $socket;
 
-        $this->doHandshake($client_domain);
+        $code = $this->readCode();
+
+        if ($code !== '220') {
+            throw new CodeException('220', $code, $this->getLastResult());
+        }
     }
 
     /**
@@ -125,26 +130,6 @@ class SMTPClient
         $this->sendMailFromCommand($sender);
         $this->sendRecipientCommands($recipients);
         $this->sendDataCommands($write);
-    }
-
-    /**
-     * Read the welcome message from the SMTP server, and send an EHLO command.
-     *
-     * Connectors call this method to perform the initial handshake with an SMTP server.
-     *
-     * @param string $client_domain
-     *
-     * @throws CodeException on failed handshake
-     */
-    protected function doHandshake($client_domain)
-    {
-        $code = $this->readCode();
-
-        if ($code !== '220') {
-            throw new CodeException('220', $code, $this->getLastResult());
-        }
-
-        $this->sendEHLO($client_domain);
     }
 
     /**

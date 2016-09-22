@@ -2,35 +2,49 @@
 
 namespace Kodus\Mail\SMTP\Authenticator;
 
+use Kodus\Mail\SMTP\SMTPClient;
+
+/**
+ * TODO finish this untested, partial implementation
+ *
+ * @see https://tools.ietf.org/html/rfc6750
+ */
 class OAuth2Authenticator
 {
-    // TODO
+    /**
+     * @var string
+     */
+    private $user;
 
     /**
-     * SMTP AUTH XOAUTH2
-     * SUCCESS 235
-     *
-     * @throws CodeException
-     * @throws SMTPException
+     * @var string
      */
-    protected function authXOAuth2()
+    private $token;
+
+    /**
+     * @param string $user
+     * @param string $token
+     */
+    public function __construct($user, $token)
     {
-        // TODO this method is unused - add support for OAUTH 2.0 authentication?
+        $this->user = $user;
+        $this->token = $token;
+    }
+
+    public function authenticate(SMTPClient $client)
+    {
+        // NOTE: I don't know if any of this is correct or not - it was ported from somewhere else
 
         $auth_str = sprintf("user=%s%sauth=Bearer %s%s%s",
-            $this->message->getFromEmail(),
+            $this->user,
             chr(1),
-            $this->oauth_token,
+            $this->token,
             chr(1),
             chr(1)
         );
 
         $auth_str = base64_encode($auth_str);
 
-        $code = $this->writeCommand("AUTH XOAUTH2 {$auth_str}");
-
-        if ($code !== '235') {
-            throw new CodeException('235', $code, array_pop($this->result_stack));
-        }
+        $client->sendCommand("AUTH XOAUTH2 {$auth_str}", "235");
     }
 }

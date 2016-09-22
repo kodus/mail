@@ -41,6 +41,8 @@ class SocketConnector implements SMTPConnector
 
         $client = new SMTPClient($socket, $client_domain);
 
+        $client->sendEHLO($client_domain);
+
         return $client;
     }
 }

@@ -6,7 +6,7 @@ use Kodus\Mail\SMTP\SMTPAuthenticator;
 use Kodus\Mail\SMTP\SMTPClient;
 
 /**
- * Plain `AUTH LOGIN` SMTP Authenticator
+ * Use this `Authenticator` with SMTP servers that require plain login authentication.
  */
 class LoginAuthenticator implements SMTPAuthenticator
 {
