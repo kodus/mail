@@ -16,9 +16,9 @@ class SecureSocketConnector extends SocketConnector
      *
      * @see stream_socket_enable_crypto()
      */
-    public function __construct($host, $port = 465, $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT)
+    public function __construct($host, $port = 25, $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT)
     {
-        parent::__construct("ssl://{$this->host}", $port);
+        parent::__construct($this->host, $port);
 
         $this->crypto_method = $crypto_method;
     }

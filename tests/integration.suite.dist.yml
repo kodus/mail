@@ -9,7 +9,7 @@ modules:
             smtp_port: 25
             # SSL connection settings:
             smtp_ssl_host: localhost
-            smtp_ssl_port: 465
+            smtp_ssl_port: 25
             smtp_ssl_crypto: STREAM_CRYPTO_METHOD_TLS_CLIENT
             # authentication settings:
             smtp_username: root

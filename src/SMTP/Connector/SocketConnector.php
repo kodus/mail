@@ -32,14 +32,11 @@ class SocketConnector implements SMTPConnector
     {
         $socket = @fsockopen($this->host, $this->port);
 
-        // TODO use blocking mode?
-        // stream_set_blocking($this->smtp, 1);
-
         if (! $socket) {
             throw new SMTPException("Could not open SMTP Port.");
         }
 
-        $client = new SMTPClient($socket, $client_domain);
+        $client = new SMTPClient($socket);
 
         $client->sendEHLO($client_domain);
 
