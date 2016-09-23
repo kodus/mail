@@ -2,9 +2,10 @@
 
 namespace Kodus\Mail\SMTP;
 
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
-class SMTPClient
+class SMTPClient implements LoggerAwareInterface
 {
     /**
      * @var resource SMTP socket handle
@@ -22,23 +23,19 @@ class SMTPClient
     protected $eol = "\r\n";
 
     /**
-     * Stack of all commands issued to SMTP
-     *
-     * @var array
+     * @var string last command issued to the SMTP server
      */
-    protected $command_stack = [];
+    protected $last_command;
 
     /**
-     * Stack of all results issued to SMTP
-     *
-     * @var array
+     * @var string last result received from the SMTP server
      */
-    protected $result_stack = [];
+    protected $last_result;
 
     /**
      * @param resource $socket SMTP socket
      *
-     * @throws CodeException on missing welcome message
+     * @throws UnexpectedCodeException on missing welcome message
      */
     public function __construct($socket)
     {
@@ -47,7 +44,7 @@ class SMTPClient
         $code = $this->readCode();
 
         if ($code !== '220') {
-            throw new CodeException('220', $code, $this->getLastResult());
+            throw new UnexpectedCodeException("220", $code, $this->last_command, $this->last_result);
         }
     }
 
@@ -65,6 +62,8 @@ class SMTPClient
      * @see http://www.php-fig.org/psr/psr-3/
      *
      * @param LoggerInterface|null $logger PSR-3 compliant Logger implementation
+     *
+     * @return void
      */
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -105,16 +104,20 @@ class SMTPClient
      *
      * @return string SMTP status code
      *
-     * @throws CodeException
+     * @throws UnexpectedCodeException
      */
     public function sendCommand($command, $expected_code = null)
     {
-        $this->write("{$command}{$this->eol}");
+        $this->last_command = $command;
+
+        $this->log("S: {$command}");
+
+        fwrite($this->socket, "{$command}{$this->eol}");
 
         $code = $this->readCode();
 
         if ($expected_code !== null && $code !== $expected_code) {
-            throw new CodeException('250', $code, $this->getLastResult());
+            throw new UnexpectedCodeException("250", $code, $this->last_command, $this->last_result);
         }
 
         return $code;
@@ -172,7 +175,7 @@ class SMTPClient
 
         stream_filter_remove($filter);
 
-        $this->sendCommand("{$this->eol}.{$this->eol}", "250");
+        $this->sendCommand("{$this->eol}.", "250");
     }
 
     /**
@@ -185,30 +188,16 @@ class SMTPClient
     protected function readCode()
     {
         while ($line = fgets($this->socket, 4096)) {
-            $this->log("Got: " . $line);
+            $this->log("R: {$line}");
 
-            $this->result_stack[] = $line;
+            $this->last_result = $line;
 
             if (preg_match('/^\d\d\d /', $line) === 1) {
                 return substr($line, 0, 3);
             }
         }
 
-        throw new SMTPException("SMTP Server did not respond with anything I recognized");
-    }
-
-    /**
-     * Write raw data to the SMTP socket
-     *
-     * @param string $data
-     */
-    protected function write($data)
-    {
-        $this->command_stack[] = $data;
-
-        fwrite($this->socket, $data, strlen($data));
-
-        $this->log('Sent: ' . $data);
+        throw new SMTPException("unexpected response\nS: {$this->last_command}\nR: {$this->last_result}");
     }
 
     /**
@@ -217,15 +206,7 @@ class SMTPClient
     protected function log($message)
     {
         if ($this->logger) {
-            $this->log($message);
+            $this->logger->debug($message);
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getLastResult()
-    {
-        return array_pop($this->result_stack);
     }
 }

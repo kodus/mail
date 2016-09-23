@@ -3,7 +3,6 @@
 namespace Kodus\Mail\Test\Integration;
 
 use IntegrationTester;
-use Kodus\Mail\SMTP\Connector\SocketConnector;
 
 class SMTPClientCest
 {
@@ -16,6 +15,10 @@ class SMTPClientCest
         $connector = $I->createSocketConnector();
 
         $client = $connector->connect("localhost");
+
+        $logger = new SMTPClientLogger();
+
+        $client->setLogger($logger);
 
         $quoted_body = quoted_printable_encode("Hey, Bar!\r\n\r\nIt's me! Foo!\r\n\r\nHow you been man?\r\n\r\n.\r\n\r\n.foo!\r\n\r\nhehehe :-)\r\n\r\n");
 
@@ -38,5 +41,26 @@ MIME;
                 fwrite($resource, $mime_message);
             }
         );
+
+        $expected = [
+            'S: MAIL FROM:<from-foo@test.org>',
+            '/R: 250.*/',
+            'S: RCPT TO:<to-bar@test.org>',
+            '/R: 250.*/',
+            'S: DATA',
+            '/R: 354.*/',
+            "S: \r\n.",
+            '/R: 250.*/',
+        ];
+
+        $records = $logger->records;
+
+        foreach ($expected as $index => $entry) {
+            if (substr($entry, 0, 1) === "/") {
+                $I->assertRegExp($entry, $records[$index]);
+            } else {
+                $I->assertSame($entry, $records[$index]);
+            }
+        }
     }
 }
