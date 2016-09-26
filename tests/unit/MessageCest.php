@@ -2,13 +2,14 @@
 
 namespace Kodus\Mail\Test\Unit;
 
+use InvalidArgumentException;
 use Kodus\Mail\Address;
 use Kodus\Mail\Header;
 use Kodus\Mail\Message;
 use UnitTester;
 
 /**
- * NOTE: other message behavior besides adding/setting headers is covered by the `MIMEWriter` test
+ * NOTE: other message behavior not covered by this test is covered by the `MIMEWriter` test
  */
 class MessageCest
 {
@@ -32,5 +33,34 @@ class MessageCest
         $message->setHeader("X-FOO", "baz");
 
         $I->assertEquals([new Header("X-FOO", "baz")], $message->getHeaders(), "can overwrite headers case-insensitively");
+    }
+
+    public function rejectInvalidUTF8MessageBody(UnitTester $I)
+    {
+        $I->expectException(
+            InvalidArgumentException::class,
+            function () {
+                $message = new Message(
+                    new Address("foo@test.org"),
+                    new Address("bar@test.org"),
+                    "La la la",
+                    "\xc3\x28"
+                );
+            }
+        );
+
+        $message = new Message(
+            new Address("foo@test.org"),
+            new Address("bar@test.org"),
+            "La la",
+            "Blu blu"
+        );
+
+        $I->expectException(
+            InvalidArgumentException::class,
+            function () use ($message) {
+                $message->setHTML("\xc3\x28");
+            }
+        );
     }
 }

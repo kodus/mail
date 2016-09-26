@@ -2,10 +2,11 @@
 
 namespace Kodus\Mail;
 
+use InvalidArgumentException;
+
 /**
  * This class represents an e-mail Message.
  *
- * TODO QA: validate subject/text/html fields as UTF-8 encoded? e.g. `preg_match('//u', $value) === 1`
  * TODO QA: validate text/html fields for CRLF line-breaks? (not required by transport) - or auto-correct line-breaks?
  */
 class Message
@@ -304,9 +305,15 @@ class Message
 
     /**
      * @param string|null $text plain text message body
+     *
+     * @throws InvalidArgumentException if the given message body is not valid UTF-8
      */
     public function setText($text)
     {
+        if (preg_match('//u', $text) !== 1) {
+            throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
+        }
+
         $this->text = $text;
     }
 
@@ -320,9 +327,15 @@ class Message
 
     /**
      * @param string|null $html HTML message body
+     *
+     * @throws InvalidArgumentException if the given message body is not valid UTF-8
      */
     public function setHTML($html)
     {
+        if (preg_match('//u', $html) !== 1) {
+            throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
+        }
+
         $this->html = $html;
     }
 
