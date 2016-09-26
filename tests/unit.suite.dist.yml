@@ -3,4 +3,4 @@ modules:
     enabled:
         - Asserts
         - Helper\Unit
-        - Kodus\Test\KodusSupport
+        - Kodus\Mail\Test\ExceptionHelper

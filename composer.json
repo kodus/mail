@@ -6,7 +6,7 @@
         "psr/log": "^1"
     },
     "require-dev": {
-        "kodus/test": "^0.3"
+        "codeception/codeception": "^2"
     },
     "autoload": {
         "psr-4": {
