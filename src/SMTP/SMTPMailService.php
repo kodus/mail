@@ -14,11 +14,6 @@ use Kodus\Mail\MIMEWriter;
 class SMTPMailService implements MailService
 {
     /**
-     * @var SMTPConnector
-     */
-    private $connector;
-
-    /**
      * @var SMTPAuthenticator
      */
     protected $authenticator;
@@ -27,6 +22,16 @@ class SMTPMailService implements MailService
      * @var string
      */
     protected $client_domain;
+
+    /**
+     * @var SMTPConnector
+     */
+    private $connector;
+
+    /**
+     * @var SMTPClient|null
+     */
+    private $client;
 
     /**
      * @param SMTPConnector     $connector     provides the SMTP connection
@@ -42,11 +47,7 @@ class SMTPMailService implements MailService
 
     public function send(Message $message)
     {
-        $client = $this->connector->connect($this->client_domain);
-
-        $this->authenticator->authenticate($client);
-
-        $client->sendMail(
+        $this->getClient()->sendMail(
             $this->getSender($message),
             $this->getRecipients($message),
             function ($socket) use ($message) {
@@ -55,10 +56,38 @@ class SMTPMailService implements MailService
                 $writer->writeMessage($message);
             }
         );
+    }
 
-        // TODO persist the SMTP connection between calls to send() ?
+    /**
+     * Internally disconnect the SMTP Client.
+     *
+     * Long-running services may wish to disconnect the SMTP client after sending a batch
+     * of Messages, to avoid timeouts.
+     *
+     * @return void
+     */
+    public function disconnect()
+    {
+        // NOTE: this will cause the SMTP Client instance will fall out of scope, which
+        //       will trigger it's destructor, which will send QUIT and close the socket.
 
-        unset($client);
+        $this->client = null;
+    }
+
+    /**
+     * Connect and authenticate SMTP Client (if not already connected)
+     *
+     * @return SMTPClient
+     */
+    protected function getClient()
+    {
+        if (! isset($this->client)) {
+            $this->client = $this->connector->connect($this->client_domain);
+
+            $this->authenticator->authenticate($this->client);
+        }
+
+        return $this->client;
     }
 
     /**
