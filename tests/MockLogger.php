@@ -1,10 +1,10 @@
 <?php
 
-namespace Kodus\Mail\Test\Integration;
+namespace Kodus\Mail\Test;
 
 use Psr\Log\LoggerInterface;
 
-class SMTPClientLogger implements LoggerInterface
+class MockLogger implements LoggerInterface
 {
     /**
      * @var string[]

@@ -4,6 +4,7 @@ namespace Kodus\Mail\Test\Integration;
 
 use Codeception\Scenario;
 use IntegrationTester;
+use Kodus\Mail\Test\MockLogger;
 
 class SecureSocketCest
 {
@@ -18,7 +19,7 @@ class SecureSocketCest
 
         $client = $connector->connect("localhost");
 
-        $logger = new SMTPClientLogger();
+        $logger = new MockLogger();
 
         $client->setLogger($logger);
 

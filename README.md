@@ -59,11 +59,53 @@ In this simple example, we use the view-service to render the message body, then
 message with the posted e-mail address in the "To" field, and then ship it off.
 
 
-## SMTP Service
+## SMTP Mail Service
 
 The `SMTPMailService` implementation connects directly to an SMTP server via sockets.
 
-TODO document SMTP service bootstrapping
+To bootstrap an SMTP mail service, you need to select a `Connector`, optionally an `Authenticator`
+implementation - for example:
+
+```php
+$service = new SMTPMailService(
+    new SocketConnector("localhost", 25),
+    new LoginAuthenticator("user", "super_secret_pa55w0rd"),
+    "test.org"
+```
+
+Note the third argument, which is the local host-name - this is used in the handshake (`EHLO`) message
+send to the SMTP server when the client connects.
+
+SMTP protocol-level logging is supported for diagnostic purposes, and can be enabled by injecting
+a [PSR-3 Logger](http://www.php-fig.org/psr/psr-3/) into `SMTPClient` via `SMTPClient::setLogger()` -
+this may be useful if you have connection issues, as it will write a `debug`-level entry for every
+SMTP command sent, and every response received.
+
+
+## Message Logging
+
+Unlike SMTP protocol-level logging described above, a more general logging facility is also available -
+this will write a single log-entry on success or failure to send a message, and is more generally
+applicable to any `MailService` implementation, including of course the SMTP service.
+
+To write a log-entry to a [PSR-3 Logger](http://www.php-fig.org/psr/psr-3/), use the `MailSeviceLogger`
+implementation, which acts as a decorator for any other `MailService` implementation - for example:
+
+```php
+$service = new MailServiceLogger($psr_logger, new SMTPMailService(...));
+```
+
+See inline documentation for `MailServiceLogger` for details on customizing the message template and log-level.
+
+
+## Passive Mail Service
+
+A passive implementation of `MailService` is available, which does nothing.
+
+You can use this during testing/development to disable any outgoing Messages.
+
+This is typically most useful in conjunction with the `MailServiceLogger` described above, to bootstrap
+a fake mail-service for testing and development, enabling you to see Messages that *would* have been sent.
 
 
 ## Development
