@@ -71,7 +71,6 @@ class MIMEWriter extends Writer
     public function writeMessageBody(Message $message)
     {
         $text = $message->getText();
-
         $html = $message->getHTML();
 
         if (! empty($text)) {
@@ -99,14 +98,14 @@ class MIMEWriter extends Writer
     /**
      * Write the "Content-Type" header and the plain-text body in quoted-printable format
      *
-     * @param string|resource $content
+     * @param string $content
      */
     public function writeTextPart($content)
     {
         $this->writeContentTypeHeader("text/plain; charset=UTF-8");
         $this->writeQuotedPrintableEncodingHeader();
         $this->writeLine();
-        $this->writeQuotedPrintable($content);
+        $this->writeQuotedPrintable($this->adjustLineBreaks($content));
         $this->writeLine();
     }
 
@@ -120,7 +119,7 @@ class MIMEWriter extends Writer
         $this->writeContentTypeHeader("text/html; charset=UTF-8");
         $this->writeQuotedPrintableEncodingHeader();
         $this->writeLine();
-        $this->writeQuotedPrintable($content);
+        $this->writeQuotedPrintable($this->adjustLineBreaks($content));
         $this->writeLine();
     }
 
@@ -269,5 +268,17 @@ class MIMEWriter extends Writer
         return preg_match('/[\x80-\xFF]/', $value) === 1
             ? "=?UTF-8?Q?" . quoted_printable_encode($value) . "?="
             : $value; // as-is
+    }
+
+    /**
+     * Adjusts line-breaks, correcting CR or LF as CRLF, to improve quoted-printable encoding.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function adjustLineBreaks($value)
+    {
+        return preg_replace('/(?>\r\n|\n|\r)/u', "\r\n", $value);
     }
 }

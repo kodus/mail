@@ -6,8 +6,6 @@ use InvalidArgumentException;
 
 /**
  * This class represents an e-mail Message.
- *
- * TODO QA: validate text/html fields for CRLF line-breaks? (not required by transport) - or auto-correct line-breaks?
  */
 class Message
 {
