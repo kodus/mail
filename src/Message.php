@@ -357,6 +357,10 @@ class Message
     }
 
     /**
+     * Set a custom MIME message header - for example, you may wish to set special headers
+     * such as `Message-ID`, `X-Priority` or `X-Mailer` headers, but be aware that some
+     * headers (such as `Message-ID`) have syntax that you need to comply with.
+     *
      * @param string $name
      * @param string $value
      */

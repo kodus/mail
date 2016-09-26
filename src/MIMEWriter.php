@@ -31,10 +31,6 @@ class MIMEWriter extends Writer
 
         $this->writeHeader("Subject", $message->getSubject());
 
-        // TODO Message-ID header?
-        // TODO X-Priority header?
-        // TODO X-Mailer header?
-
         $this->writeHeader("MIME-Version", "1.0");
 
         foreach ($message->getHeaders() as $header) {
@@ -48,7 +44,6 @@ class MIMEWriter extends Writer
 
             $this->writeMixedContentTypeHeader($boundary);
 
-            // TODO QA: is this necessary, or even valid? GMail, for example, does not add this
             $this->writeLine();
             $this->writeLine("This is a multipart message in MIME format.");
             $this->writeLine();
