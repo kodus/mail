@@ -1,5 +1,6 @@
 {
     "name": "kodus/mail",
+    "description": "Simple, modern library services for sending UTF-8 e-mail",
     "authors": [
         {
             "name": "Rasmus Schultz",
