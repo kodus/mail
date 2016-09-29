@@ -1,5 +1,13 @@
 {
     "name": "kodus/mail",
+    "authors": [
+        {
+            "name": "Rasmus Schultz",
+            "email": "rasc@jfmedier.dk",
+            "role": "Developer"
+        }
+    ],
+    "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
