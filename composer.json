@@ -1,6 +1,6 @@
 {
     "name": "kodus/mail",
-    "description": "Simple, modern library services for sending UTF-8 e-mail",
+    "description": "Simple, modern library of services for sending UTF-8 e-mail",
     "authors": [
         {
             "name": "Rasmus Schultz",
@@ -12,6 +12,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "php": ">= 5.6",
         "psr/log": "^1"
     },
     "require-dev": {
