@@ -70,7 +70,7 @@ implementation - for example:
 $service = new SMTPMailService(
     new SocketConnector("localhost", 25),
     new LoginAuthenticator("user", "super_secret_pa55w0rd"),
-    "test.org"
+    "test.org");
 ```
 
 Note the third argument, which is the local host-name - this is used in the handshake (`EHLO`) message
