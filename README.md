@@ -17,46 +17,25 @@ The model permits any combination of UTF-8 text and HTML message bodies with any
 
 ## Usage
 
-Components that need to send e-mail should depend on the `MailService` interface, via constructor
-injection, which allows for injection of e.g. a mock or void mail service under test.
+The following example assumes a `MailService` instance named `$service` is in scope - subsequent sections
+will explain how to configure an e-mail service.
 
-As an example, here is a naiive controller for a POST-request from an open e-mail form:
+Here's an example of sending a plain-text e-mail with an attachment:
 
 ```php
-use Kodus\Mail\MailService;
-use Kodus\KodusView;
+$message = new Message(
+    new Address($email),        // recipient
+    new Address("me@test.org"), // sender
+    "Hello, Person!",           // subject
+    $text                       // plain text message body
+);
 
-class PostMailForm extends Controller
-{
-    private $mail;
-    private $view;
+$service->addAttachment(Attachment::fromFile(__DIR__ . "/awsum/unicorns.gif"));
 
-    public function __construct(MailService $mail, KodusView $view)
-    {
-        $this->mail = $mail;
-        $this->view = $view;
-    }
-
-    public function run($text, $email)
-    {
-        $body = $this->view->capture(new MessageView($text, $email));
-
-        $message = new Message(
-            new Address($email),        // recipient
-            new Address("me@test.org"), // sender
-            "Hello, Person!",           // subject
-            $body                       // plain text message body
-        );
-
-        $this->mail->send($message);
-
-        return new ViewResult(new MailFormConfirmationPage());
-    }
-}
+$service->send($message);
 ```
 
-In this simple example, we use the view-service to render the message body, then compose a
-message with the posted e-mail address in the "To" field, and then ship it off.
+Refer to the [`Message`](src/Message.php) model to learn about additional message properties.
 
 
 ## SMTP Mail Service
@@ -71,6 +50,7 @@ $service = new SMTPMailService(
     new SocketConnector("localhost", 25),
     new LoginAuthenticator("user", "super_secret_pa55w0rd"),
     "test.org"
+);
 ```
 
 Note the third argument, which is the local host-name - this is used in the handshake (`EHLO`) message
