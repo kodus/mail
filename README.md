@@ -1,7 +1,7 @@
 kodus/mail
 ==========
 
-Simple services for sending UTF-8 e-mail.
+[Simple](#objectives) services for sending UTF-8 e-mail.
 
 
 ## Overview
@@ -98,3 +98,19 @@ On Linux, you will likely just have to set up an actual, local SMTP daemon. (Hav
 
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
 SMTP host-name, port-number, etc.
+
+
+<a name="objectives"></a>
+## Objectives
+
+This library has a number of stated design objectives:
+
+  * Simplicity: UTF-8 is the only supported character-set, we make an effort not to reinvent the wheel
+    (e.g. leveraging base64 and quoted-printable stream-filters) and the library has no external dependencies.
+  * Using streams for efficiency and predictable memory usage - in particular, file attachments are
+    encoded and sent in chunks, without buffering the entire message or juggling huge strings.
+  * Separation of concerns - in particular, MIME encoding and SMTP transport concerns
+    ("[dot-stuffing](https://tools.ietf.org/html/rfc5321#section-4.5.2)") are fully separated, which in
+    turn is made possible by proper use of streams.
+  * Using dependency injection (primarily constructor injection) everywhere.
+  * Using abstractions (interfaces) both at the high level and for dependencies/components.
