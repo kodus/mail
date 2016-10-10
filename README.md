@@ -1,8 +1,33 @@
 kodus/mail
 ==========
 
+[![PHP Version](https://img.shields.io/badge/php-5.6%2B-blue.svg)](https://packagist.org/packages/kodus/mail)
+
 [Simple](#objectives) services for sending UTF-8 e-mail.
 
+
+## Features
+
+  * SMTP client supports username/password authentication and secure (SSL) sockets.
+  * Sends MIME-compliant multi-part text/HTML e-mails.
+  * Handles large attachments using streams for predictable, low memory usage.
+  * Attachments from memory or from any stream-wrapper.
+  * Multiple recipients for all types of recipient fields.
+  * Sends multiple e-mails without reconnecting.
+
+### Non-Features
+
+Some features are delibarely outside the scope of this project:
+
+  * Support for arbitrary character sets is omitted - all modern mail clients support UTF-8.
+
+  * No support for `mail()` as a transport method, as this function has constraints that conflict with our
+    objectives - mainly, it does not support streams, which means the entire message has to fit in memory,
+    which leads to unpredictable performance and memory usage.
+
+  * Inline attachments are not (currently) supported, and are not a priority - inline images are blocked by
+    default, by all major e-mail clients, the same as any other form of images. (a link to an external image
+    is no better or worse in that sense; recipients still have to opt-in if they want to see images from you.)
 
 ## Overview
 
