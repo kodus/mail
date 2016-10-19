@@ -65,6 +65,11 @@ class Message
     private $attachments = [];
 
     /**
+     * @var InlineAttachment[]
+     */
+    private $inline_attachments = [];
+
+    /**
      * @var Header[]
      */
     private $headers = [];
@@ -351,6 +356,39 @@ class Message
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments[] = $attachment;
+    }
+
+    /**
+     * @return InlineAttachment[]
+     */
+    public function getInlineAttachments()
+    {
+        return $this->inline_attachments;
+    }
+
+    /**
+     * Add an inline Attachment, e.g. an image you wish to display in the HTML body of your Message.
+     *
+     * This method returns a URI for the inline Attachment - you should substitute a placeholder,
+     * e.g. for the `src` attribute of an `img` tag, in the body of your HTML Message content -
+     * for example:
+     *
+     *     $html = '<img src="#logo-image"/>';
+     *     $uri = $message->addInlineAttachment(Attachment::fromFile(__DIR__ . '/logo.png'));
+     *     $html = strtr($html, ["#logo-image" => $uri]);
+     *     $message->setHTML($html);
+     *
+     * @param Attachment $attachment
+     *
+     * @return string inline Attachment URI
+     */
+    public function addInlineAttachment(Attachment $attachment)
+    {
+        $inline_attachment = new InlineAttachment($attachment);
+
+        $this->inline_attachments[] = $inline_attachment;
+
+        return "cid:" . $inline_attachment->getContentID();
     }
 
     /**

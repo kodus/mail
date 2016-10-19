@@ -25,10 +25,6 @@ Some features are delibarely outside the scope of this project:
     objectives - mainly, it does not support streams, which means the entire message has to fit in memory,
     which leads to unpredictable performance and memory usage.
 
-  * Inline attachments are not (currently) supported, and are not a priority - inline images are blocked by
-    default, by all major e-mail clients, the same as any other form of images. (a link to an external image
-    is no better or worse in that sense; recipients still have to opt-in if they want to see images from you.)
-
 ## Overview
 
 Mail service implementations are abstracted behind the `MailService` interface, which depends
@@ -117,7 +113,7 @@ a fake mail-service for testing and development, enabling you to see Messages th
 
 To run the integration tests, you will need to set up a local SMTP server for testing.
 
-On Windows, try [http://smtp4dev.codeplex.com/](SMTP4Dev).
+On Windows, try [Papercut](https://papercut.codeplex.com/) or [SMTP4Dev](http://smtp4dev.codeplex.com/).
 
 On Linux, you will likely just have to set up an actual, local SMTP daemon. (Have fun with that!)
 

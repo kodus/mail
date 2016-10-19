@@ -6,6 +6,35 @@ class MIMEWriter extends Writer
 {
     public function writeMessage(Message $message)
     {
+        $this->writeMessageHeaders($message);
+
+        $inline_attachments = $message->getInlineAttachments();
+
+        if (count($inline_attachments)) {
+            $boundary = $this->createMultipartBoundaryName("related");
+
+            $this->writeRelatedContentTypeHeader($boundary);
+            $this->writeLine();
+
+            $this->writeMultipartBoundary($boundary);
+            $this->writeMessageWithAttachments($message);
+
+            foreach ($inline_attachments as $inline) {
+                $this->writeMultipartBoundary($boundary);
+                $this->writeAttachmentPart($inline->getAttachment(), $inline->getContentID());
+            }
+
+            $this->writeMultipartBoundaryEnd($boundary);
+        } else {
+            $this->writeMessageWithAttachments($message);
+        }
+    }
+
+    /**
+     * @param Message $message
+     */
+    public function writeMessageHeaders(Message $message)
+    {
         $this->writeHeader("Date", date("r", $message->getDate()));
 
         $this->writeAddressHeader("To", $message->getTo());
@@ -36,31 +65,39 @@ class MIMEWriter extends Writer
         foreach ($message->getHeaders() as $header) {
             $this->writeHeader($header->getName(), $header->getValue());
         }
+    }
 
-        $attachments = $message->getAttachments();
-
-        if (count($attachments)) {
-            $boundary = $this->createMultipartBoundaryName("mixed");
-
-            $this->writeMixedContentTypeHeader($boundary);
-
-            $this->writeLine();
-            $this->writeLine("This is a multipart message in MIME format.");
-            $this->writeLine();
-
-            $this->writeMultipartBoundary($boundary);
-
+    /**
+     * Write a multipart Message with Attachments
+     *
+     * @param Message $message
+     */
+    public function writeMessageWithAttachments(Message $message)
+    {
+        if (empty($message->getAttachments())) {
             $this->writeMessageBody($message);
 
-            foreach ($attachments as $attachment) {
-                $this->writeMultipartBoundary($boundary);
-                $this->writeAttachmentPart($attachment);
-            }
-
-            $this->writeMultipartBoundaryEnd($boundary);
-        } else {
-            $this->writeMessageBody($message);
+            return;
         }
+
+        $boundary = $this->createMultipartBoundaryName("mixed");
+
+        $this->writeMixedContentTypeHeader($boundary);
+
+        $this->writeLine();
+        $this->writeLine("This is a multipart message in MIME format.");
+        $this->writeLine();
+
+        $this->writeMultipartBoundary($boundary);
+
+        $this->writeMessageBody($message);
+
+        foreach ($message->getAttachments() as $attachment) {
+            $this->writeMultipartBoundary($boundary);
+            $this->writeAttachmentPart($attachment);
+        }
+
+        $this->writeMultipartBoundaryEnd($boundary);
     }
 
     /**
@@ -126,15 +163,24 @@ class MIMEWriter extends Writer
     /**
      * Write the "Content-Type" header and the Attachment Content in base-64 encoded format
      *
-     * @param Attachment $attachment
+     * @param Attachment  $attachment
+     * @param string|null Content ID (for inline Attachments)
      */
-    public function writeAttachmentPart(Attachment $attachment)
+    public function writeAttachmentPart(Attachment $attachment, $content_id = null)
     {
         $filename = $attachment->getFilename();
 
         $this->writeContentTypeHeader($attachment->getMIMEType());
         $this->writeBase64EncodingHeader();
-        $this->writeHeader("Content-Disposition", "attachment; filename=\"{$filename}\"");
+
+        if ($content_id === null) {
+            $this->writeHeader("Content-Disposition", "attachment; filename=\"{$filename}\"");
+        } else {
+            // inline Attachment with Content ID:
+            $this->writeHeader("Content-Disposition", "inline; filename=\"{$filename}\"");
+            $this->writeHeader("Content-ID", "<{$content_id}>");
+        }
+
         $this->writeLine();
         $this->writeBase64($attachment->getContent());
         $this->writeLine();
@@ -216,6 +262,14 @@ class MIMEWriter extends Writer
     public function writeAlternativeContentTypeHeader($boundary)
     {
         $this->writeContentTypeHeader("multipart/alternative; boundary=\"{$boundary}\"");
+    }
+
+    /**
+     * @param string $boundary
+     */
+    public function writeRelatedContentTypeHeader($boundary)
+    {
+        $this->writeContentTypeHeader("multipart/related; boundary=\"{$boundary}\"");
     }
 
     /**

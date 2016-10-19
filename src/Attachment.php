@@ -39,9 +39,9 @@ class Attachment
     /**
      * Create an attachment from a physical file (or any other supported stream protocol)
      *
-     * @param string $path absolute path to physical file (or any other supported stream protocol)
-     * @param string|null $filename optional logical filename (defaults to base filename of the specified physical file)
-     * @param string $mime_type MIME-type
+     * @param string      $path      absolute path to physical file (or any other supported stream protocol)
+     * @param string|null $filename  optional logical filename (defaults to base filename of the specified physical file)
+     * @param string      $mime_type MIME-type
      *
      * @return self
      */
