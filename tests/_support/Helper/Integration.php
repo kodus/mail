@@ -8,6 +8,11 @@ use Kodus\Mail\SMTP\Connector\SocketConnector;
 
 class Integration extends \Codeception\Module
 {
+    public function _before()
+    {
+        date_default_timezone_set("Europe/Copenhagen");
+    }
+
     /**
      * @return \Kodus\Mail\SMTP\Connector\SocketConnector
      */

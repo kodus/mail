@@ -6,5 +6,8 @@ namespace Helper;
 
 class Unit extends \Codeception\Module
 {
-
+    public function _before()
+    {
+        date_default_timezone_set("Europe/Copenhagen");
+    }
 }

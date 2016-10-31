@@ -2,6 +2,8 @@
 
 namespace Kodus\Mail;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use InvalidArgumentException;
 
 /**
@@ -45,7 +47,7 @@ class Message
     private $subject;
 
     /**
-     * @var int timestamp
+     * @var DateTimeInterface
      */
     private $date;
 
@@ -224,7 +226,7 @@ class Message
      *
      * Some systems may choose to include the text of the "BCC" field only in the author's copy,
      * while others may also include it in the text sent to all those indicated in the "BCC" list.
-     * 
+     *
      * @param Address|Address[] $address
      */
     public function setBCC($address)
@@ -281,7 +283,7 @@ class Message
     }
 
     /**
-     * @return int timestamp
+     * @return DateTimeInterface
      */
     public function getDate()
     {
@@ -289,13 +291,22 @@ class Message
     }
 
     /**
-     * @param int|string $date integer timestamp, or a string compatible with the strtotime() function
+     * @param int|string|DateTimeInterface $date DateTime in Sender's timezone (or a UNIX integer timestamp;
+     *                                           or a string that is compatible with the strtotime() function)
      */
     public function setDate($date)
     {
-        $this->date = is_int($date)
-            ? $date
-            : strtotime($date);
+        if ($date instanceof DateTimeInterface) {
+            $this->date = $date;
+        } elseif (is_int($date)) {
+            $this->date = DateTimeImmutable::createFromFormat("U", $date)
+                ->setTimezone(timezone_open(date_default_timezone_get()));
+        } elseif (is_string($date)) {
+            $this->date = DateTimeImmutable::createFromFormat("U", strtotime($date))
+                ->setTimezone(timezone_open(date_default_timezone_get()));
+        } else {
+            throw new InvalidArgumentException("invalid date given: " . var_export($date, true));
+        }
     }
 
     /**

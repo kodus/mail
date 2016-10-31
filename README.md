@@ -5,6 +5,8 @@ kodus/mail
 
 [Simple](#objectives) services for sending UTF-8 e-mail.
 
+See [UPGRADING.md](UPGRADING.md) for upgrade instructions.
+
 
 ## Features
 
@@ -116,7 +118,8 @@ To run the integration tests, you will need to set up a local SMTP server for te
 
 On Windows, try [Papercut](https://papercut.codeplex.com/) or [SMTP4Dev](http://smtp4dev.codeplex.com/).
 
-On Linux, you will likely just have to set up an actual, local SMTP daemon. (Have fun with that!)
+On Linux, you will likely just have to set up an actual, local SMTP daemon. (see `.travis.yml` for an
+example of installing and starting `smtp-sink` which comes with `postfix`.)
 
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
 SMTP host-name, port-number, etc.

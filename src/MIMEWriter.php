@@ -35,7 +35,7 @@ class MIMEWriter extends Writer
      */
     public function writeMessageHeaders(Message $message)
     {
-        $this->writeHeader("Date", date("r", $message->getDate()));
+        $this->writeHeader("Date", $message->getDate()->format("r"));
 
         $this->writeAddressHeader("To", $message->getTo());
         $this->writeAddressHeader("From", $message->getFrom());
