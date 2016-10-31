@@ -25,6 +25,9 @@ class TestMessageFactory
     const HTML_BODY                  = "<strong>It's me! Rasmus!</strong>\n\nI love danish characters, look: æøåÆØÅ! whoa!\r\n\r\nTake care, friend.";
     const HTML_BODY_QUOTED_PRINTABLE = "<strong>It's me! Rasmus!</strong>\r\n\r\nI love danish characters, look: =C3=A6=C3=B8=C3=A5=C3=86=C3=98=C3=85! whoa!\r\n\r\nTake care, friend.";
 
+    const HTML_BODY_WITH_INLINE_IMAGE = '<strong>It\'s me! Rasmus!</strong><br>I love kittens, look:<br><img src="#kitten-uri"><br>Take care, friend.';
+    const HTML_BODY_WITH_INLINE_IMAGE_QP = "<strong>It's me! Rasmus!</strong><br>I love kittens, look:<br><img src=3D\"c=\r\nid:b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail\"><br>Take care, frie=\r\nnd.";
+
     /**
      * @param string $filename
      *
@@ -68,7 +71,9 @@ class TestMessageFactory
 
         $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
 
-        $message->addAttachment(new Attachment(file_get_contents($this->getFixturePath("kitten.jpg")), "kitten.jpg", "image/jpeg"));
+        $message->addAttachment(
+            new Attachment(file_get_contents($this->getFixturePath("kitten.jpg")), "kitten.jpg", "image/jpeg")
+        );
 
         return $message;
     }
@@ -98,7 +103,9 @@ class TestMessageFactory
     {
         $message = $this->createHTMLMessage();
 
-        $message->addAttachment(new Attachment(file_get_contents($this->getFixturePath("kitten.jpg")), "kitten.jpg", "image/jpeg"));
+        $message->addAttachment(
+            new Attachment(file_get_contents($this->getFixturePath("kitten.jpg")), "kitten.jpg", "image/jpeg")
+        );
 
         return $message;
     }
@@ -170,7 +177,7 @@ class TestMessageFactory
         $message = new Message(
             [
                 new Address("blip@test.org", "Rasmus Schultz"),
-                new Address("also-blip@test.org", "Also Rasmus Schultz")
+                new Address("also-blip@test.org", "Also Rasmus Schultz"),
             ],
             new Address("blub@test.org"),
             "Hey, Rasmus!",
@@ -218,6 +225,96 @@ class TestMessageFactory
         $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
 
         $message->addHeader("X-Custom-Header", "custom-value");
+
+        return $message;
+    }
+
+    /**
+     * @return Message
+     */
+    public function createMessageWithInlineAttachment()
+    {
+        $message = new Message(
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
+            "Hey, Rasmus!",
+            null
+        );
+
+        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+
+        $uri = $message->addInlineAttachment(
+            Attachment::fromFile($this->getFixturePath("kitten.jpg"), null, "image/jpeg")
+        );
+
+        $message->setHTML(strtr(self::HTML_BODY_WITH_INLINE_IMAGE, ["#kitten-uri" => $uri]));
+
+        return $message;
+    }
+
+    /**
+     * @return Message
+     */
+    public function createMessageWithInlineAttachmentAndTextAlternative()
+    {
+        $message = new Message(
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
+            "Hey, Rasmus!",
+            self::TEXT_BODY
+        );
+
+        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+
+        $uri = $message->addInlineAttachment(
+            Attachment::fromFile($this->getFixturePath("kitten.jpg"), null, "image/jpeg")
+        );
+
+        $message->setHTML(strtr(self::HTML_BODY_WITH_INLINE_IMAGE, ["#kitten-uri" => $uri]));
+
+        return $message;
+    }
+
+    public function createMessageWithInlineAndRegularAttachments()
+    {
+        $message = new Message(
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
+            "Hey, Rasmus!",
+            null
+        );
+
+        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+
+        $uri = $message->addInlineAttachment(
+            Attachment::fromFile($this->getFixturePath("kitten.jpg"), null, "image/jpeg")
+        );
+
+        $message->addAttachment(new Attachment(self::TEXT_BODY, "hello.txt"));
+
+        $message->setHTML(strtr(self::HTML_BODY_WITH_INLINE_IMAGE, ["#kitten-uri" => $uri]));
+
+        return $message;
+    }
+
+    public function createMessageWithInlineAndRegularAttachmentsAndTextAlternative()
+    {
+        $message = new Message(
+            new Address("blip@test.org"),
+            new Address("blub@test.org"),
+            "Hey, Rasmus!",
+            self::TEXT_BODY
+        );
+
+        $message->setDate("Thu, 15 Sep 2016 17:20:54 +0200");
+
+        $uri = $message->addInlineAttachment(
+            Attachment::fromFile($this->getFixturePath("kitten.jpg"), null, "image/jpeg")
+        );
+
+        $message->addAttachment(new Attachment(self::TEXT_BODY, "hello.txt"));
+
+        $message->setHTML(strtr(self::HTML_BODY_WITH_INLINE_IMAGE, ["#kitten-uri" => $uri]));
 
         return $message;
     }

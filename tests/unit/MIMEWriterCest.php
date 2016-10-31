@@ -2,8 +2,10 @@
 
 namespace Kodus\Mail\Test\Unit;
 
+use Kodus\Mail\InlineAttachment;
 use Kodus\Mail\Message;
 use Kodus\Mail\Test\TestMessageFactory;
+use ReflectionProperty;
 use UnitTester;
 
 /**
@@ -28,6 +30,17 @@ class MIMEWriterCest
     public function __construct()
     {
         $this->factory = new TestMessageFactory();
+    }
+
+    public function _before()
+    {
+        // manually override the initial internal seed in InlineAttachment for consistent results:
+
+        $seed_reflection = new ReflectionProperty(InlineAttachment::class, "seed");
+
+        $seed_reflection->setAccessible(true);
+
+        $seed_reflection->setValue(null, "adYshLJ93fD45Ymee9Sw");
     }
 
     public function _after(UnitTester $I)
@@ -336,6 +349,196 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
 Hello!
+
+MIME;
+
+        $I->assertSame($expected_mime, $this->toMIME($message));
+    }
+
+    public function writeMessageWithInlineAttachment(UnitTester $I)
+    {
+        $message = $this->factory->createMessageWithInlineAttachment();
+
+        $encoded_inline_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
+
+        $encoded_message = TestMessageFactory::HTML_BODY_WITH_INLINE_IMAGE_QP;
+
+        $expected_mime = <<<MIME
+Date: Thu, 15 Sep 2016 17:20:54 +0200
+To: blip@test.org
+From: blub@test.org
+Subject: Hey, Rasmus!
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++"
+
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_message}
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="kitten.jpg"
+Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
+
+{$encoded_inline_attachment}
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
+
+MIME;
+
+        $I->assertSame($expected_mime, $this->toMIME($message));
+    }
+
+    public function writeMessageWithInlineAttachmentAndTextAlternative(UnitTester $I)
+    {
+        $message = $this->factory->createMessageWithInlineAttachmentAndTextAlternative();
+
+        $encoded_inline_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
+
+        $encoded_message = TestMessageFactory::HTML_BODY_WITH_INLINE_IMAGE_QP;
+
+        $encoded_alt_message = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
+
+        $expected_mime = <<<MIME
+Date: Thu, 15 Sep 2016 17:20:54 +0200
+To: blip@test.org
+From: blub@test.org
+Subject: Hey, Rasmus!
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++"
+
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: multipart/alternative; boundary="++++alternative-5870793b3a929ca762d3e15521a8ff2b1e382f08++++"
+
+--++++alternative-5870793b3a929ca762d3e15521a8ff2b1e382f08++++
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_alt_message}
+--++++alternative-5870793b3a929ca762d3e15521a8ff2b1e382f08++++
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_message}
+--++++alternative-5870793b3a929ca762d3e15521a8ff2b1e382f08++++--
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="kitten.jpg"
+Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
+
+{$encoded_inline_attachment}
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
+
+MIME;
+
+        $I->assertSame($expected_mime, $this->toMIME($message));
+    }
+
+    public function writeMessageWithInlineAndRegularAttachments(UnitTester $I)
+    {
+        $message = $this->factory->createMessageWithInlineAndRegularAttachments();
+
+        $encoded_inline_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
+
+        $encoded_message = TestMessageFactory::HTML_BODY_WITH_INLINE_IMAGE_QP;
+
+        $encoded_attachment = TestMessageFactory::TEXT_BODY_BASE64;
+
+        $expected_mime = <<<MIME
+Date: Thu, 15 Sep 2016 17:20:54 +0200
+To: blip@test.org
+From: blub@test.org
+Subject: Hey, Rasmus!
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++"
+
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: multipart/mixed; boundary="++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++"
+
+This is a multipart message in MIME format.
+
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_message}
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="hello.txt"
+
+{$encoded_attachment}
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++--
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="kitten.jpg"
+Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
+
+{$encoded_inline_attachment}
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
+
+MIME;
+
+        $I->assertSame($expected_mime, $this->toMIME($message));
+    }
+
+    public function writeMessageWithInlineAndRegularAttachmentsAndTextAlternative(UnitTester $I)
+    {
+        $message = $this->factory->createMessageWithInlineAndRegularAttachmentsAndTextAlternative();
+
+        $encoded_inline_attachment = file_get_contents($this->factory->getFixturePath("kitten.base64.txt"));
+
+        $encoded_message = TestMessageFactory::HTML_BODY_WITH_INLINE_IMAGE_QP;
+
+        $encoded_attachment = TestMessageFactory::TEXT_BODY_BASE64;
+
+        $encoded_alt_message = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
+
+        $expected_mime = <<<MIME
+Date: Thu, 15 Sep 2016 17:20:54 +0200
+To: blip@test.org
+From: blub@test.org
+Subject: Hey, Rasmus!
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++"
+
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: multipart/mixed; boundary="++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++"
+
+This is a multipart message in MIME format.
+
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++
+Content-Type: multipart/alternative; boundary="++++alternative-26f75b7ab7df5f9a927cb1a023dd823ac1e8e52a++++"
+
+--++++alternative-26f75b7ab7df5f9a927cb1a023dd823ac1e8e52a++++
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_alt_message}
+--++++alternative-26f75b7ab7df5f9a927cb1a023dd823ac1e8e52a++++
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+{$encoded_message}
+--++++alternative-26f75b7ab7df5f9a927cb1a023dd823ac1e8e52a++++--
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="hello.txt"
+
+{$encoded_attachment}
+--++++mixed-bc44c88263a3a2cb8f8c9ec7946d1b263082df7c++++--
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="kitten.jpg"
+Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
+
+{$encoded_inline_attachment}
+--++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
 
 MIME;
 
