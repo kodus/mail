@@ -6,7 +6,7 @@ namespace Helper;
 
 class Unit extends \Codeception\Module
 {
-    public function _before()
+    public function _before(\Codeception\TestInterface $test)
     {
         date_default_timezone_set("Europe/Copenhagen");
     }

@@ -8,7 +8,7 @@ use Kodus\Mail\SMTP\Connector\SocketConnector;
 
 class Integration extends \Codeception\Module
 {
-    public function _before()
+    public function _before(\Codeception\TestInterface $test)
     {
         date_default_timezone_set("Europe/Copenhagen");
     }
