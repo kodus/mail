@@ -12,7 +12,7 @@ before_script:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq postfix
-  - smtp-sink -d "%d.%H.%M.%S" localhost:25 1000 &
+  - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
 
 script: vendor/bin/codecept run --coverage-xml
 

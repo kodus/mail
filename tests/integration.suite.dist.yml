@@ -7,10 +7,10 @@ modules:
         - Helper\Integration:
             # plain connection settings:
             smtp_host: localhost
-            smtp_port: 25
+            smtp_port: 2500
             # SSL connection settings:
             smtp_ssl_host: localhost
-            smtp_ssl_port: 25
+            smtp_ssl_port: 2500
             smtp_ssl_crypto: STREAM_CRYPTO_METHOD_TLS_CLIENT
             # authentication settings:
             smtp_username: root
