@@ -12,6 +12,7 @@ kodus/mail
   * Sends MIME-compliant multi-part text/HTML e-mails.
   * Handles large attachments using streams for predictable, low memory usage.
   * Attachments from memory or from any stream-wrapper.
+  * Support for inline (image) attachments.
   * Multiple recipients for all types of recipient fields.
   * Sends multiple e-mails without reconnecting.
 
