@@ -299,10 +299,10 @@ class Message
         if ($date instanceof DateTimeInterface) {
             $this->date = $date;
         } elseif (is_int($date)) {
-            $this->date = DateTimeImmutable::createFromFormat("U", $date)
+            $this->date = DateTimeImmutable::createFromFormat("U", (string) $date)
                 ->setTimezone(timezone_open(date_default_timezone_get()));
         } elseif (is_string($date)) {
-            $this->date = DateTimeImmutable::createFromFormat("U", strtotime($date))
+            $this->date = DateTimeImmutable::createFromFormat("U", (string) strtotime($date))
                 ->setTimezone(timezone_open(date_default_timezone_get()));
         } else {
             throw new InvalidArgumentException("invalid date given: " . var_export($date, true));
