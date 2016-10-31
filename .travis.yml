@@ -7,7 +7,7 @@ php:
   - hhvm
 
 before_script:
-  - 'composer install --dev --prefer-source'
+  - 'composer install --prefer-source'
 
 before_install:
   - sudo apt-get update -qq
