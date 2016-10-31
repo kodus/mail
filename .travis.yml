@@ -14,8 +14,8 @@ before_install:
   - sudo apt-get install -y -qq postfix
   - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
 
-script: vendor/bin/codecept run --coverage-xml
+script: if [ $(phpenv version-name) = "7.0" ]; then vendor/bin/codecept run --coverage-xml; else vendor/bin/codecept run; fi
 
 after_script:
-  - if [ $(phpenv version-name) = "5.6" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [ $(phpenv version-name) = "5.6" ]; then php ocular.phar code-coverage:upload --format=php-clover tests/_output/coverage.xml; fi
+  - if [ $(phpenv version-name) = "7.0" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [ $(phpenv version-name) = "7.0" ]; then php ocular.phar code-coverage:upload --format=php-clover tests/_output/coverage.xml; fi
