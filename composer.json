@@ -6,6 +6,11 @@
             "name": "Rasmus Schultz",
             "email": "rasc@jfmedier.dk",
             "role": "Developer"
+        },
+        {
+            "name": "Maher M'Hiri",
+            "email": "mamh@jfmedier.dk",
+            "role": "Developer"
         }
     ],
     "license": "MIT",
