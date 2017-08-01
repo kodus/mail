@@ -57,7 +57,7 @@ $message = new Message(
     $text                       // plain text message body
 );
 
-$service->addAttachment(Attachment::fromFile(__DIR__ . "/awsum/unicorns.gif"));
+$message->addAttachment(Attachment::fromFile(__DIR__ . "/awsum/unicorns.gif"));
 
 $service->send($message);
 ```
