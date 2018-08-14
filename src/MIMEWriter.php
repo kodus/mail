@@ -40,8 +40,14 @@ class MIMEWriter extends Writer
         $this->writeAddressHeader("To", $message->getTo());
         $this->writeAddressHeader("From", $message->getFrom());
         $this->writeAddressHeader("Cc", $message->getCC());
-        $this->writeAddressHeader("Bcc", $message->getBCC());
         $this->writeAddressHeader("Reply-To", $message->getReplyTo());
+
+        /**
+         * NOTE: per section 3.6.3 of RFC2822, we do not write BCC recipients to headers.
+         *
+         * @see https://www.ietf.org/rfc/rfc2822.txt
+         * @see https://github.com/kodus/mail/issues/10
+         */
 
         $sender = $message->getSender();
 
