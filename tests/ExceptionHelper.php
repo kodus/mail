@@ -4,7 +4,7 @@ namespace Kodus\Mail\Test;
 
 use Codeception\Module;
 use Exception;
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Exception as ConstraintException;
 use PHPUnit\Framework\Constraint\ExceptionMessage as ConstraintExceptionMessage;
 
@@ -34,14 +34,14 @@ class ExceptionHelper extends Module
 
         $exception_type = $exception ? get_class($exception) : 'null';
 
-        PHPUnit_Framework_Assert::assertThat(
+        Assert::assertThat(
             $exception,
             new ConstraintException($type),
             $exception_type . " NOT EQUAL TO " . $type
         );
 
         if ($message !== null) {
-            PHPUnit_Framework_Assert::assertThat(
+            Assert::assertThat(
                 $exception,
                 new ConstraintExceptionMessage($message)
             );
