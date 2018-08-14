@@ -7,6 +7,8 @@ use Kodus\Mail\SMTP\SMTPClient;
 /**
  * TODO finish this untested, partial implementation
  *
+ * @see https://github.com/kodus/mail/issues/1
+ *
  * @see https://tools.ietf.org/html/rfc7628
  */
 class OAuthAuthenticator
