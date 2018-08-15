@@ -69,8 +69,8 @@ Refer to the [`Message`](src/Message.php) model to learn about additional messag
 
 The `SMTPMailService` implementation connects directly to an SMTP server via sockets.
 
-To bootstrap an SMTP mail service, you need to select a `Connector`, optionally an `Authenticator`
-implementation - for example:
+To bootstrap an SMTP mail service, you need to select your `Connector` and `Authenticator`
+implementations - for example:
 
 ```php
 $service = new SMTPMailService(
