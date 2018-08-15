@@ -321,7 +321,6 @@ Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
 Cc: joe@test.org
-Bcc: bob@test.org
 Subject: Hey, Rasmus!
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
