@@ -1,7 +1,7 @@
 kodus/mail
 ==========
 
-[![PHP Version](https://img.shields.io/badge/php-7.0%2B-blue.svg)](https://packagist.org/packages/kodus/mail)
+[![PHP Version](https://img.shields.io/badge/php-7.1%2B-blue.svg)](https://packagist.org/packages/kodus/mail)
 [![Build Status](https://travis-ci.org/kodus/mail.svg?branch=master)](https://travis-ci.org/kodus/mail)
 [![Code Coverage](https://scrutinizer-ci.com/g/kodus/mail/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kodus/mail/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kodus/mail/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kodus/mail/?branch=master)

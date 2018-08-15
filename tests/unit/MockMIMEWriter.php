@@ -11,7 +11,7 @@ class MockMIMEWriter extends MIMEWriter
 {
     private $index = 0;
 
-    protected function createMultipartBoundaryName($prefix)
+    protected function createMultipartBoundaryName(string $prefix): string
     {
         $this->index += 1;
 

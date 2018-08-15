@@ -23,7 +23,9 @@ class MailServiceLogger implements MailService
     private $mail_service;
 
     /**
-     * @var string log-message template (see getMessageTokens() for available tokens)
+     * @var string log-message template
+     *
+     * @see getMessageTokens() for available tokens
      */
     public $template = "{status} via {service} to: {to} from: {from} with subject: {subject}";
 
@@ -49,7 +51,7 @@ class MailServiceLogger implements MailService
      *
      * @throws Exception|Error if the underlying Mail Service throws an Exception or Error
      */
-    public function send(Message $message)
+    public function send(Message $message): void
     {
         try {
             $this->mail_service->send($message);
@@ -77,10 +79,11 @@ class MailServiceLogger implements MailService
 
     /**
      * @param Message $message
+     * @param string  $status error/success status description
      *
      * @return array map where message token => replacement string
      */
-    protected function getMessageTokens(Message $message, $status)
+    protected function getMessageTokens(Message $message, string $status): array
     {
         return [
             "{status}"  => $status,
@@ -90,7 +93,6 @@ class MailServiceLogger implements MailService
             "{cc}"      => $this->formatAddresses($message->getCC()),
             "{bcc}"     => $this->formatAddresses($message->getBCC()),
             "{subject}" => $message->getSubject(),
-            // TODO add more tokens
         ];
     }
 
@@ -99,7 +101,7 @@ class MailServiceLogger implements MailService
      *
      * @return string
      */
-    protected function formatAddresses($addresses)
+    protected function formatAddresses(array $addresses): string
     {
         return implode(
             ", ",

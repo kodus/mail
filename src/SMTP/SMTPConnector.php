@@ -14,5 +14,5 @@ interface SMTPConnector
      *
      * @return SMTPClient open SMTP client, post-handshake, awaiting commands
      */
-    public function connect($client_domain);
+    public function connect(string $client_domain): SMTPClient;
 }

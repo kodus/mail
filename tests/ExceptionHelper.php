@@ -15,7 +15,7 @@ class ExceptionHelper extends Module
      * @param string|callable $message_or_function
      * @param callable|null   $function
      */
-    public function assertException($type, $message_or_function, callable $function = null)
+    public function assertException(string $type, $message_or_function, ?callable $function = null)
     {
         if (func_num_args() === 3) {
             $message = $message_or_function;

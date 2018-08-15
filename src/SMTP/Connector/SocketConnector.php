@@ -22,13 +22,13 @@ class SocketConnector implements SMTPConnector
      * @param string $host SMTP host-name
      * @param int    $port SMTP port-number
      */
-    public function __construct($host, $port = 25)
+    public function __construct(string $host, int $port = 25)
     {
         $this->host = $host;
         $this->port = $port;
     }
 
-    public function connect($client_domain)
+    public function connect(string $client_domain): SMTPClient
     {
         $socket = @fsockopen($this->host, $this->port);
 

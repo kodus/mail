@@ -11,7 +11,7 @@ use RuntimeException;
  */
 class TotallyIncompetentMessageService implements MailService
 {
-    public function send(Message $message)
+    public function send(Message $message): void
     {
         throw new RuntimeException("OMG! everything is broken!");
     }

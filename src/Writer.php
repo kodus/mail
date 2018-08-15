@@ -39,7 +39,7 @@ class Writer
      *
      * @param string|resource $input
      */
-    public function write($input)
+    public function write($input): void
     {
         if (is_string($input)) {
             fwrite($this->output, $input);
@@ -56,7 +56,7 @@ class Writer
      *
      * @param string $string
      */
-    public function writeLine($string = "")
+    public function writeLine($string = ""): void
     {
         fwrite($this->output, $string);
         fwrite($this->output, $this->eol);
@@ -67,7 +67,7 @@ class Writer
      *
      * @param string|resource $input
      */
-    public function writeQuotedPrintable($input)
+    public function writeQuotedPrintable($input): void
     {
         $this->writeFiltered(
             $input,
@@ -84,7 +84,7 @@ class Writer
      *
      * @param string|resource $input
      */
-    public function writeBase64($input)
+    public function writeBase64($input): void
     {
         $this->writeFiltered(
             $input,
@@ -104,7 +104,7 @@ class Writer
      * @param string          $filter
      * @param array           $options
      */
-    protected function writeFiltered($input, $filter, $options = [])
+    protected function writeFiltered($input, string $filter, array $options = []): void
     {
         $filter = stream_filter_append($this->output, $filter, STREAM_FILTER_WRITE, $options);
 

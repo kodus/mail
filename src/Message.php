@@ -83,7 +83,7 @@ class Message
      * @param string|null       $text
      * @param string|null       $html
      */
-    public function __construct($to, $from, $subject, $text, $html = null)
+    public function __construct($to, $from, string $subject, ?string $text, ?string $html = null)
     {
         $this->setTo($to);
         $this->setFrom($from);
@@ -94,9 +94,9 @@ class Message
     }
 
     /**
-     * @return Address|Address[]
+     * @return Address[]
      */
-    public function getTo()
+    public function getTo(): array
     {
         return $this->to;
     }
@@ -106,7 +106,7 @@ class Message
      *
      * @param Address|Address[] $address
      */
-    public function setTo($address)
+    public function setTo($address): void
     {
         $this->to = is_array($address) ? $address : [$address];
     }
@@ -114,15 +114,15 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function addTo($address)
+    public function addTo($address): void
     {
         $this->to = array_merge($this->to, is_array($address) ? $address : [$address]);
     }
 
     /**
-     * @return Address|Address[]
+     * @return Address[]
      */
-    public function getFrom()
+    public function getFrom(): array
     {
         return $this->from;
     }
@@ -134,7 +134,7 @@ class Message
      *
      * @param Address|Address[] $address
      */
-    public function setFrom($address)
+    public function setFrom($address): void
     {
         $this->from = is_array($address) ? $address : [$address];
     }
@@ -142,17 +142,17 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function addFrom($address)
+    public function addFrom($address): void
     {
         $this->from = array_merge($this->from, is_array($address) ? $address : [$address]);
     }
 
     /**
-     * Return the Sender
+     * Return the Sender (if any)
      *
      * @return Address|null
      */
-    public function getSender()
+    public function getSender(): ?Address
     {
         if ($this->sender) {
             return $this->sender;
@@ -179,15 +179,15 @@ class Message
      *
      * @param Address|null $sender
      */
-    public function setSender(Address $sender)
+    public function setSender(?Address $sender): void
     {
         $this->sender = $sender;
     }
 
     /**
-     * @return Address|Address[]
+     * @return Address[]
      */
-    public function getCC()
+    public function getCC(): array
     {
         return $this->cc;
     }
@@ -197,7 +197,7 @@ class Message
      *
      * @param Address|Address[] $address
      */
-    public function setCC($address)
+    public function setCC($address): void
     {
         $this->cc = is_array($address) ? $address : [$address];
     }
@@ -205,15 +205,15 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function addCC($address)
+    public function addCC($address): void
     {
         $this->cc = array_merge($this->cc, is_array($address) ? $address : [$address]);
     }
 
     /**
-     * @return Address|Address[]
+     * @return Address[]
      */
-    public function getBCC()
+    public function getBCC(): array
     {
         return $this->bcc;
     }
@@ -229,7 +229,7 @@ class Message
      *
      * @param Address|Address[] $address
      */
-    public function setBCC($address)
+    public function setBCC($address): void
     {
         $this->bcc = is_array($address) ? $address : [$address];
     }
@@ -237,15 +237,15 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function addBCC($address)
+    public function addBCC($address): void
     {
         $this->bcc = array_merge($this->bcc, is_array($address) ? $address : [$address]);
     }
 
     /**
-     * @return Address|Address[]
+     * @return Address[]
      */
-    public function getReplyTo()
+    public function getReplyTo(): array
     {
         return $this->reply_to;
     }
@@ -253,7 +253,7 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function setReplyTo($address)
+    public function setReplyTo($address): void
     {
         $this->reply_to = is_array($address) ? $address : [$address];
     }
@@ -261,7 +261,7 @@ class Message
     /**
      * @param Address|Address[] $address
      */
-    public function addReplyTo($address)
+    public function addReplyTo($address): void
     {
         $this->reply_to = array_merge($this->reply_to, is_array($address) ? $address : [$address]);
     }
@@ -269,7 +269,7 @@ class Message
     /**
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): string
     {
         return $this->subject;
     }
@@ -277,7 +277,7 @@ class Message
     /**
      * @param string $subject
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject): void
     {
         $this->subject = $subject;
     }
@@ -285,7 +285,7 @@ class Message
     /**
      * @return DateTimeInterface
      */
-    public function getDate()
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
@@ -294,7 +294,7 @@ class Message
      * @param int|string|DateTimeInterface $date DateTime in Sender's timezone (or a UNIX integer timestamp;
      *                                           or a string that is compatible with the strtotime() function)
      */
-    public function setDate($date)
+    public function setDate($date): void
     {
         if ($date instanceof DateTimeInterface) {
             $this->date = $date;
@@ -312,7 +312,7 @@ class Message
     /**
      * @return string|null plain text message body
      */
-    public function getText()
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -322,7 +322,7 @@ class Message
      *
      * @throws InvalidArgumentException if the given message body is not valid UTF-8
      */
-    public function setText($text)
+    public function setText(?string $text): void
     {
         if (preg_match('//u', $text) !== 1) {
             throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
@@ -334,7 +334,7 @@ class Message
     /**
      * @return string|null HTML message body
      */
-    public function getHTML()
+    public function getHTML(): ?string
     {
         return $this->html;
     }
@@ -344,7 +344,7 @@ class Message
      *
      * @throws InvalidArgumentException if the given message body is not valid UTF-8
      */
-    public function setHTML($html)
+    public function setHTML(?string $html): void
     {
         if (preg_match('//u', $html) !== 1) {
             throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
@@ -356,7 +356,7 @@ class Message
     /**
      * @return Attachment[]
      */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
@@ -364,7 +364,7 @@ class Message
     /**
      * @param Attachment $attachment
      */
-    public function addAttachment(Attachment $attachment)
+    public function addAttachment(Attachment $attachment): void
     {
         $this->attachments[] = $attachment;
     }
@@ -372,7 +372,7 @@ class Message
     /**
      * @return InlineAttachment[]
      */
-    public function getInlineAttachments()
+    public function getInlineAttachments(): array
     {
         return $this->inline_attachments;
     }
@@ -393,7 +393,7 @@ class Message
      *
      * @return string inline Attachment URI
      */
-    public function addInlineAttachment(Attachment $attachment)
+    public function addInlineAttachment(Attachment $attachment): string
     {
         $inline_attachment = new InlineAttachment($attachment);
 
@@ -405,7 +405,7 @@ class Message
     /**
      * @return Header[]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $all_headers = [];
 
@@ -424,7 +424,7 @@ class Message
      * @param string $name
      * @param string $value
      */
-    public function setHeader($name, $value)
+    public function setHeader(string $name, string $value): void
     {
         $this->headers[strtolower($name)] = [new Header($name, $value)];
     }
@@ -433,7 +433,7 @@ class Message
      * @param string $name
      * @param string $value
      */
-    public function addHeader($name, $value)
+    public function addHeader(string $name, string $value): void
     {
         $this->headers[strtolower($name)][] = new Header($name, $value);
     }

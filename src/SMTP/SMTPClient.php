@@ -65,7 +65,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @return void
      */
-    public function setLogger(LoggerInterface $logger = null)
+    public function setLogger(?LoggerInterface $logger = null): void
     {
         $this->logger = $logger;
     }
@@ -75,7 +75,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @param string $client_domain
      */
-    public function sendEHLO($client_domain)
+    public function sendEHLO(string $client_domain)
     {
         $this->sendCommand("EHLO {$client_domain}", "250");
     }
@@ -87,7 +87,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @throws SMTPException on failure
      */
-    public function sendSTARTTLS($crypto_method)
+    public function sendSTARTTLS(int $crypto_method)
     {
         $this->sendCommand("STARTTLS", "220");
 
@@ -106,7 +106,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @throws UnexpectedCodeException
      */
-    public function sendCommand($command, $expected_code = null)
+    public function sendCommand(string $command, ?string $expected_code = null)
     {
         $this->last_command = $command;
 
@@ -126,9 +126,9 @@ class SMTPClient implements LoggerAwareInterface
     /**
      * @param string   $sender     sender e-mail address
      * @param string[] $recipients list of recipient e-mail addresses
-     * @param callable $write      function (resource $resouce) : void
+     * @param callable $write function (resource $resouce) :
      */
-    public function sendMail($sender, array $recipients, callable $write)
+    public function sendMail(string $sender, array $recipients, callable $write): void
     {
         $this->sendMailFromCommand($sender);
         $this->sendRecipientCommands($recipients);
@@ -140,7 +140,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @param string $sender sender e-mail address
      */
-    protected function sendMailFromCommand($sender)
+    protected function sendMailFromCommand(string $sender)
     {
         $this->sendCommand("MAIL FROM:<{$sender}>", "250");
     }
@@ -150,7 +150,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @param string[] $recipients list of recipient e-mail addresses
      */
-    protected function sendRecipientCommands(array $recipients)
+    protected function sendRecipientCommands(array $recipients): void
     {
         foreach ($recipients as $recipient) {
             $this->sendCommand("RCPT TO:<{$recipient}>", "250");
@@ -165,7 +165,7 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @throws SMTPException
      */
-    protected function sendDataCommands(callable $write)
+    protected function sendDataCommands(callable $write): void
     {
         $this->sendCommand("DATA", "354");
 
@@ -183,9 +183,9 @@ class SMTPClient implements LoggerAwareInterface
      *
      * @return string SMTP status code
      *
-     * @throws SMTPException
+     * @throws SMTPException for unexpected response
      */
-    protected function readCode()
+    protected function readCode(): string
     {
         while ($line = fgets($this->socket, 4096)) {
             $this->log("R: {$line}");
@@ -203,7 +203,7 @@ class SMTPClient implements LoggerAwareInterface
     /**
      * @param string $message
      */
-    protected function log($message)
+    protected function log(string $message): void
     {
         if ($this->logger) {
             $this->logger->debug($message);

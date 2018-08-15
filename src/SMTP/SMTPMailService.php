@@ -5,6 +5,7 @@ namespace Kodus\Mail\SMTP;
 use Kodus\Mail\MailService;
 use Kodus\Mail\Message;
 use Kodus\Mail\MIMEWriter;
+use Kodus\Mail\SMTP\Authenticator\NoAuthenticator;
 
 /**
  * This Mail Service implementation delivers Messages directly to an SMTP server.
@@ -13,6 +14,11 @@ use Kodus\Mail\MIMEWriter;
  */
 class SMTPMailService implements MailService
 {
+    /**
+     * @var SMTPConnector
+     */
+    private $connector;
+
     /**
      * @var SMTPAuthenticator
      */
@@ -24,28 +30,23 @@ class SMTPMailService implements MailService
     protected $client_domain;
 
     /**
-     * @var SMTPConnector
-     */
-    private $connector;
-
-    /**
      * @var SMTPClient|null
      */
     private $client;
 
     /**
-     * @param SMTPConnector     $connector     provides the SMTP connection
-     * @param SMTPAuthenticator $authenticator performs SMTP authentication
-     * @param string            $client_domain client domain-name (provided in handshakes when connecting)
+     * @param SMTPConnector          $connector     provides the SMTP connection
+     * @param SMTPAuthenticator|null $authenticator performs SMTP authentication (or NULL to use `NoAuthenticator`)
+     * @param string                 $client_domain client domain-name (provided in handshakes when connecting)
      */
-    public function __construct(SMTPConnector $connector, SMTPAuthenticator $authenticator, $client_domain)
+    public function __construct(SMTPConnector $connector, ?SMTPAuthenticator $authenticator, string $client_domain)
     {
         $this->connector = $connector;
-        $this->authenticator = $authenticator;
+        $this->authenticator = $authenticator ?: new NoAuthenticator();
         $this->client_domain = $client_domain;
     }
 
-    public function send(Message $message)
+    public function send(Message $message): void
     {
         $this->getClient()->sendMail(
             $this->getSender($message),
@@ -63,10 +64,8 @@ class SMTPMailService implements MailService
      *
      * Long-running services may wish to disconnect the SMTP client after sending a batch
      * of Messages, to avoid timeouts.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         // NOTE: this will cause the SMTP Client instance will fall out of scope, which
         //       will trigger it's destructor, which will send QUIT and close the socket.
@@ -79,7 +78,7 @@ class SMTPMailService implements MailService
      *
      * @return SMTPClient
      */
-    protected function getClient()
+    protected function getClient(): SMTPClient
     {
         if (! isset($this->client)) {
             $this->client = $this->connector->connect($this->client_domain);
@@ -97,7 +96,7 @@ class SMTPMailService implements MailService
      *
      * @return string sender e-mail address
      */
-    private function getSender(Message $message)
+    private function getSender(Message $message): string
     {
         $sender = $message->getSender();
 
@@ -117,7 +116,7 @@ class SMTPMailService implements MailService
      *
      * @return string[] list of recipient e-mail addresses
      */
-    private function getRecipients(Message $message)
+    private function getRecipients(Message $message): array
     {
         $recipients = [];
 

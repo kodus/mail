@@ -4,7 +4,7 @@ namespace Kodus\Mail;
 
 class MIMEWriter extends Writer
 {
-    public function writeMessage(Message $message)
+    public function writeMessage(Message $message): void
     {
         $this->writeMessageHeaders($message);
 
@@ -30,10 +30,7 @@ class MIMEWriter extends Writer
         }
     }
 
-    /**
-     * @param Message $message
-     */
-    public function writeMessageHeaders(Message $message)
+    public function writeMessageHeaders(Message $message): void
     {
         $this->writeHeader("Date", $message->getDate()->format("r"));
 
@@ -78,7 +75,7 @@ class MIMEWriter extends Writer
      *
      * @param Message $message
      */
-    public function writeMessageWithAttachments(Message $message)
+    public function writeMessageWithAttachments(Message $message): void
     {
         if (empty($message->getAttachments())) {
             $this->writeMessageBody($message);
@@ -111,7 +108,7 @@ class MIMEWriter extends Writer
      *
      * @param Message $message
      */
-    public function writeMessageBody(Message $message)
+    public function writeMessageBody(Message $message): void
     {
         $text = $message->getText();
         $html = $message->getHTML();
@@ -143,7 +140,7 @@ class MIMEWriter extends Writer
      *
      * @param string $content
      */
-    public function writeTextPart($content)
+    public function writeTextPart(string $content): void
     {
         $this->writeContentTypeHeader("text/plain; charset=UTF-8");
         $this->writeQuotedPrintableEncodingHeader();
@@ -157,7 +154,7 @@ class MIMEWriter extends Writer
      *
      * @param string $content
      */
-    public function writeHTMLPart($content)
+    public function writeHTMLPart(string $content): void
     {
         $this->writeContentTypeHeader("text/html; charset=UTF-8");
         $this->writeQuotedPrintableEncodingHeader();
@@ -172,7 +169,7 @@ class MIMEWriter extends Writer
      * @param Attachment  $attachment
      * @param string|null Content ID (for inline Attachments)
      */
-    public function writeAttachmentPart(Attachment $attachment, $content_id = null)
+    public function writeAttachmentPart(Attachment $attachment, ?string $content_id = null): void
     {
         $filename = $attachment->getFilename();
 
@@ -195,7 +192,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $boundary
      */
-    public function writeMultipartBoundary($boundary)
+    public function writeMultipartBoundary(string $boundary): void
     {
         $this->writeLine("--{$boundary}");
     }
@@ -203,7 +200,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $boundary
      */
-    public function writeMultipartBoundaryEnd($boundary)
+    public function writeMultipartBoundaryEnd(string $boundary): void
     {
         $this->writeLine("--{$boundary}--");
     }
@@ -212,7 +209,7 @@ class MIMEWriter extends Writer
      * @param string $name
      * @param string $value
      */
-    public function writeHeader($name, $value)
+    public function writeHeader(string $name, string $value): void
     {
         $value = $this->escapeHeaderValue($value);
 
@@ -223,7 +220,7 @@ class MIMEWriter extends Writer
      * @param string    $name      header name
      * @param Address[] $addresses list of Address objects
      */
-    public function writeAddressHeader($name, $addresses)
+    public function writeAddressHeader(string $name, array $addresses): void
     {
         if (count($addresses)) {
             $this->writeHeader(
@@ -249,7 +246,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $type
      */
-    public function writeContentTypeHeader($type)
+    public function writeContentTypeHeader(string $type): void
     {
         $this->writeHeader("Content-Type", $type);
     }
@@ -257,7 +254,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $boundary
      */
-    public function writeMixedContentTypeHeader($boundary)
+    public function writeMixedContentTypeHeader(string $boundary): void
     {
         $this->writeContentTypeHeader("multipart/mixed; boundary=\"{$boundary}\"");
     }
@@ -265,7 +262,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $boundary
      */
-    public function writeAlternativeContentTypeHeader($boundary)
+    public function writeAlternativeContentTypeHeader(string $boundary): void
     {
         $this->writeContentTypeHeader("multipart/alternative; boundary=\"{$boundary}\"");
     }
@@ -273,7 +270,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $boundary
      */
-    public function writeRelatedContentTypeHeader($boundary)
+    public function writeRelatedContentTypeHeader(string $boundary): void
     {
         $this->writeContentTypeHeader("multipart/related; boundary=\"{$boundary}\"");
     }
@@ -281,7 +278,7 @@ class MIMEWriter extends Writer
     /**
      * Writes the "Content-Transfer-Encoding" header with value "quoted-printable"
      */
-    public function writeQuotedPrintableEncodingHeader()
+    public function writeQuotedPrintableEncodingHeader(): void
     {
         $this->writeContentEncodingHeader("quoted-printable");
     }
@@ -289,7 +286,7 @@ class MIMEWriter extends Writer
     /**
      * Writes the "Content-Transfer-Encoding" header with value "base64"
      */
-    public function writeBase64EncodingHeader()
+    public function writeBase64EncodingHeader(): void
     {
         $this->writeContentEncodingHeader("base64");
     }
@@ -297,7 +294,7 @@ class MIMEWriter extends Writer
     /**
      * @param string $encoding encoding (e.g. "quoted-printable", "base64" or "8bit")
      */
-    protected function writeContentEncodingHeader($encoding)
+    protected function writeContentEncodingHeader($encoding): void
     {
         $this->writeHeader("Content-Transfer-Encoding", $encoding);
     }
@@ -309,7 +306,7 @@ class MIMEWriter extends Writer
      *
      * @return string
      */
-    protected function createMultipartBoundaryName($prefix)
+    protected function createMultipartBoundaryName(string $prefix): string
     {
         static $boundary_index = 1;
 
@@ -323,7 +320,7 @@ class MIMEWriter extends Writer
      *
      * @return string
      */
-    protected function escapeHeaderValue($value)
+    protected function escapeHeaderValue(string $value): string
     {
         return preg_match('/[\x80-\xFF]/', $value) === 1
             ? "=?UTF-8?Q?" . quoted_printable_encode($value) . "?="
@@ -337,7 +334,7 @@ class MIMEWriter extends Writer
      *
      * @return string
      */
-    protected function adjustLineBreaks($value)
+    protected function adjustLineBreaks(string $value): string
     {
         return preg_replace('/(?>\r\n|\n|\r)/u', "\r\n", $value);
     }

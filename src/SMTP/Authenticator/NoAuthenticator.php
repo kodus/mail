@@ -10,7 +10,7 @@ use Kodus\Mail\SMTP\SMTPClient;
  */
 class NoAuthenticator implements SMTPAuthenticator
 {
-    public function authenticate(SMTPClient $client)
+    public function authenticate(SMTPClient $client): void
     {
         // yep, this method does nothing :-)
     }

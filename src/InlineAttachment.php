@@ -37,7 +37,7 @@ class InlineAttachment
     /**
      * @return Attachment
      */
-    public function getAttachment()
+    public function getAttachment(): Attachment
     {
         return $this->attachment;
     }
@@ -45,7 +45,7 @@ class InlineAttachment
     /**
      * @return string
      */
-    public function getContentID()
+    public function getContentID(): string
     {
         return $this->content_id;
     }

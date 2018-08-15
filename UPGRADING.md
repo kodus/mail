@@ -3,7 +3,9 @@ UPGRADING
 
 ## 1.0.0
 
-There are no breaking changes from 0.2.x, but this release requires PHP 7.0 or later.
+This release requires PHP 7.1 or later - APIs have not changed since 0.2.x, but static type-hints
+have been added, so you may need to add type-hints to custom implementations of any interfaces defined
+by this package.
 
 ## 0.1.x to 0.2.x
 

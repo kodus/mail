@@ -2,6 +2,7 @@
 
 namespace Kodus\Mail\SMTP\Authenticator;
 
+use Kodus\Mail\SMTP\SMTPAuthenticator;
 use Kodus\Mail\SMTP\SMTPClient;
 
 /**
@@ -11,7 +12,7 @@ use Kodus\Mail\SMTP\SMTPClient;
  *
  * @see https://tools.ietf.org/html/rfc6750
  */
-class OAuth2Authenticator
+class OAuth2Authenticator implements SMTPAuthenticator
 {
     /**
      * @var string
@@ -27,13 +28,13 @@ class OAuth2Authenticator
      * @param string $user
      * @param string $token
      */
-    public function __construct($user, $token)
+    public function __construct(string $user, string $token)
     {
         $this->user = $user;
         $this->token = $token;
     }
 
-    public function authenticate(SMTPClient $client)
+    public function authenticate(SMTPClient $client): void
     {
         // NOTE: I don't know if any of this is correct or not - it was ported from somewhere else
 

@@ -12,7 +12,7 @@ use Kodus\Mail\Message;
  */
 class PassiveMailService implements MailService
 {
-    public function send(Message $message)
+    public function send(Message $message): void
     {
         // yep, this does nothing :-)
     }

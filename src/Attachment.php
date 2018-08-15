@@ -29,7 +29,7 @@ class Attachment
      * @param string          $filename  logical filename
      * @param string          $mime_type MIME-type
      */
-    public function __construct($content, $filename, $mime_type = self::DEFAULT_MIME_TYPE)
+    public function __construct($content, string $filename, string $mime_type = self::DEFAULT_MIME_TYPE)
     {
         $this->content = $content;
         $this->filename = $filename;
@@ -45,7 +45,7 @@ class Attachment
      *
      * @return self
      */
-    public static function fromFile($path, $filename = null, $mime_type = self::DEFAULT_MIME_TYPE)
+    public static function fromFile(string $path, ?string $filename = null, string $mime_type = self::DEFAULT_MIME_TYPE): self
     {
         return new self(
             fopen($path, "r"),
@@ -62,18 +62,12 @@ class Attachment
         return $this->content;
     }
 
-    /**
-     * @return string
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @return string
-     */
-    public function getMIMEType()
+    public function getMIMEType(): string
     {
         return $this->mime_type;
     }

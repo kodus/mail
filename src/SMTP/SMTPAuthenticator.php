@@ -11,8 +11,6 @@ interface SMTPAuthenticator
      * Authenticates with an SMTP server
      *
      * @param SMTPClient $client
-     *
-     * @return void
      */
-    public function authenticate(SMTPClient $client);
+    public function authenticate(SMTPClient $client): void;
 }

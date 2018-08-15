@@ -13,7 +13,12 @@ class UnexpectedCodeException extends SMTPException
      * @param string $last_command
      * @param string $last_result
      */
-    public function __construct($expected_code, $unexpected_code, $last_command, $last_result)
+    public function __construct(
+        string $expected_code,
+        string $unexpected_code,
+        string $last_command,
+        string $last_result
+    )
     {
         parent::__construct(
             "Unexpected status code: {$unexpected_code} (expected: {$expected_code})\n"

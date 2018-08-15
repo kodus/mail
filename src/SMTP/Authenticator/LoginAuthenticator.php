@@ -24,13 +24,13 @@ class LoginAuthenticator implements SMTPAuthenticator
      * @param string $username
      * @param string $password
      */
-    public function __construct($username, $password)
+    public function __construct(string $username, string $password)
     {
         $this->username = $username;
         $this->password = $password;
     }
 
-    public function authenticate(SMTPClient $client)
+    public function authenticate(SMTPClient $client): void
     {
         $client->sendCommand("AUTH LOGIN", "334");
         $client->sendCommand(base64_encode($this->username), "334");

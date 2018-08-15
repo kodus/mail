@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">= 7.0",
+        "php": ">= 7.1",
         "psr/log": "^1"
     },
     "require-dev": {

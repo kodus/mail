@@ -22,12 +22,12 @@ class Address
 
     /**
      * @param string      $email valid e-mail address
-     * @param string|null $name  display name
+     * @param string|null $name  display name (optional)
      *
      * @throws InvalidArgumentException for invalid e-mail address
      * @throws RuntimeException on attempted CRLF name injection
      */
-    public function __construct($email, $name = null)
+    public function __construct(string $email, ?string $name = null)
     {
         if (! self::isValidEmail($email)) {
             throw new InvalidArgumentException("invalid e-mail address");
@@ -43,28 +43,17 @@ class Address
         $this->name = $name;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return bool
-     */
-    public static function isValidEmail($email)
+    public static function isValidEmail(string $email): bool
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
