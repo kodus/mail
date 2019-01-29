@@ -54,7 +54,7 @@ class MIMEWriterCest
 
         $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
@@ -66,7 +66,7 @@ Content-Transfer-Encoding: quoted-printable
 
 {$quoted_body}
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -79,7 +79,7 @@ MIME;
 
         $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org, zoink@test.org
@@ -103,7 +103,7 @@ Content-Disposition: attachment; filename="kitten.jpg"
 {$encoded_attachment}
 --++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -114,7 +114,7 @@ MIME;
 
         $quoted_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
@@ -125,7 +125,7 @@ Content-Transfer-Encoding: quoted-printable
 
 {$quoted_body}
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -138,7 +138,7 @@ MIME;
 
         $quoted_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
@@ -161,7 +161,7 @@ Content-Disposition: attachment; filename="kitten.jpg"
 {$encoded_attachment}
 --++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -173,7 +173,7 @@ MIME;
         $quoted_text = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
         $quoted_html = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>
 From: blub@test.org
@@ -193,7 +193,7 @@ Content-Transfer-Encoding: quoted-printable
 {$quoted_html}
 --++++alternative-aaafaf7c286e771e9bd71eacae9f26ae36c9c650++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -208,7 +208,7 @@ MIME;
 
         $quoted_html_body = TestMessageFactory::HTML_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: =?UTF-8?Q?Rasmus =C3=A5h Schultz?= <blip@test.org>
 From: blub@test.org
@@ -240,7 +240,7 @@ Content-Disposition: attachment; filename="kitten.jpg"
 {$encoded_attachment}
 --++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -258,7 +258,7 @@ MIME;
 
         $quoted_body = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>
 From: blub@test.org
@@ -287,7 +287,7 @@ Content-Disposition: attachment; filename="hello.txt"
 {$encoded_second_attachment}
 --++++mixed-03e3b4a304d78659f1a3c0a3cea31a4d73f3a426++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -296,7 +296,7 @@ MIME;
     {
         $message = $this->factory->createMessageWithMultipleRecipients();
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: Rasmus Schultz <blip@test.org>, Also Rasmus Schultz <also-blip@test.org>
 From: blub@test.org
@@ -307,7 +307,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Hello!
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -316,7 +316,7 @@ MIME;
     {
         $message = $this->factory->createMessageWithCCAndBCCRecipients();
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -328,7 +328,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Hello!
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -337,7 +337,7 @@ MIME;
     {
         $message = $this->factory->createMessageWithCustomHeaders();
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -349,7 +349,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Hello!
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -362,7 +362,7 @@ MIME;
 
         $encoded_message = TestMessageFactory::HTML_BODY_WITH_INLINE_IMAGE_QP;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -384,7 +384,7 @@ Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
 {$encoded_inline_attachment}
 --++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -399,7 +399,7 @@ MIME;
 
         $encoded_alt_message = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -430,7 +430,7 @@ Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
 {$encoded_inline_attachment}
 --++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -445,7 +445,7 @@ MIME;
 
         $encoded_attachment = TestMessageFactory::TEXT_BODY_BASE64;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -479,7 +479,7 @@ Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
 {$encoded_inline_attachment}
 --++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
@@ -496,7 +496,7 @@ MIME;
 
         $encoded_alt_message = TestMessageFactory::TEXT_BODY_QUOTED_PRINTABLE;
 
-        $expected_mime = <<<MIME
+        $expected_mime = <<<EOT
 Date: Thu, 15 Sep 2016 17:20:54 +0200
 To: blip@test.org
 From: blub@test.org
@@ -539,7 +539,7 @@ Content-ID: <b4d9305ff3748b154ca751b562342c527c23d3bf@kodus.mail>
 {$encoded_inline_attachment}
 --++++related-39b004dfb8671932b47924cc47958a54d3b4524e++++--
 
-MIME;
+EOT;
 
         $I->assertSame($expected_mime, $this->toMIME($message));
     }
