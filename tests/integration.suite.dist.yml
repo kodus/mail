@@ -1,9 +1,8 @@
-class_name: IntegrationTester
+actor: IntegrationTester
 modules:
     enabled:
         - Asserts
         - Helper\Unit
-        - Kodus\Mail\Test\ExceptionHelper
         - Helper\Integration:
             # plain connection settings:
             smtp_host: localhost

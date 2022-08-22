@@ -13,10 +13,7 @@ class Integration extends \Codeception\Module
         date_default_timezone_set("Europe/Copenhagen");
     }
 
-    /**
-     * @return \Kodus\Mail\SMTP\Connector\SocketConnector
-     */
-    public function createSocketConnector()
+    public function createSocketConnector(): SocketConnector
     {
         return new SocketConnector(
             $this->config["smtp_host"],
@@ -24,10 +21,7 @@ class Integration extends \Codeception\Module
         );
     }
 
-    /**
-     * @return \Kodus\Mail\SMTP\Connector\SecureSocketConnector
-     */
-    public function createSecureSocketConnector()
+    public function createSecureSocketConnector(): SecureSocketConnector
     {
         return new SecureSocketConnector(
             $this->config["smtp_ssl_host"],
@@ -36,10 +30,7 @@ class Integration extends \Codeception\Module
         );
     }
 
-    /**
-     * @return \Kodus\Mail\SMTP\Authenticator\LoginAuthenticator
-     */
-    public function createLoginAuthenticator()
+    public function createLoginAuthenticator(): LoginAuthenticator
     {
         return new LoginAuthenticator(
             $this->config["smtp_username"],
