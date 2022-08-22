@@ -127,6 +127,7 @@ example of installing and starting `smtp-sink` which comes with `postfix`.)
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
 SMTP host-name, port-number, etc.
 
+If you want the `SecureSocketCest` to pass you will need to set up a SSL certificate for your SMTP server and make sure your system trusts it.
 
 <a name="objectives"></a>
 ## Objectives

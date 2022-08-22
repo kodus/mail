@@ -3,6 +3,7 @@
 namespace Kodus\Mail\SMTP\Connector;
 
 use Kodus\Mail\SMTP\SMTPClient;
+use Kodus\Mail\SMTP\SMTPException;
 
 class SecureSocketConnector extends SocketConnector
 {
@@ -25,6 +26,9 @@ class SecureSocketConnector extends SocketConnector
         $this->crypto_method = $crypto_method;
     }
 
+    /**
+     * @throws SMTPException
+     */
     public function connect(string $client_domain): SMTPClient
     {
         $client = parent::connect($client_domain);
