@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodus\Mail\Test;
+namespace Kodus\Mail\Test\Mocks;
 
 use Psr\Log\LoggerInterface;
 

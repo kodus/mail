@@ -4,17 +4,17 @@ namespace Kodus\Mail\Test\Integration;
 
 use Codeception\Scenario;
 use IntegrationTester;
-use Kodus\Mail\Test\MockLogger;
+use Kodus\Mail\Test\Mocks\MockLogger;
 
 class SecureSocketCest
 {
     /**
-     * @param IntegrationTester $I
-     *
-     * @skip TODO implement this test
+     * TODO implement this test
      */
     public function sendSMTPMessageOverSecureSocket(IntegrationTester $I, Scenario $scenario)
     {
+        $I->markTestSkipped();
+
         $connector = $I->createSecureSocketConnector();
 
         $client = $connector->connect("localhost");

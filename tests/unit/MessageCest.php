@@ -39,7 +39,7 @@ class MessageCest
 
     public function rejectInvalidUTF8MessageBody(UnitTester $I)
     {
-        $I->expectException(
+        $I->expectThrowable(
             InvalidArgumentException::class,
             function () {
                 $message = new Message(
@@ -58,7 +58,7 @@ class MessageCest
             "Blu blu"
         );
 
-        $I->expectException(
+        $I->expectThrowable(
             InvalidArgumentException::class,
             function () use ($message) {
                 $message->setHTML("\xc3\x28");
