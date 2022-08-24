@@ -17,7 +17,7 @@ class SecureSocketCest
             $client = $connector->connect("localhost");
         } catch (SMTPException $exception) {
             $I->markTestSkipped(<<<EOT
-                Make sure your SMTP service has a SSL certificate and that your system trusts it.
+                Make sure your SMTP server has a SSL certificate installed and that your system trusts it.
                 [{$exception->getMessage()}]
             EOT);
         }
