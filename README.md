@@ -121,8 +121,10 @@ To run the integration tests, you will need to set up a local SMTP server for te
 
 To make sure `SecureSocketCest` passes your SMTP server also needs to have TLS support with a SSL certificate.
 
-[smtp4dev](https://github.com/rnwood/smtp4dev) since it has cross-platform support and can generate its own self-signed certificate.
+It is recommended to use [smtp4dev](https://github.com/rnwood/smtp4dev) since it has cross-platform support and can generate its own self-signed SSL certificate.
+
 When configuring smtp4dev make sure to set `TlsMode` to `StartTls`, this ensures that TLS is only used when the client asks for it, setting it to `ImplicitTls` will likely make all non-TLS tests fail.
+
 When starting the smtp4dev server it should tell you where the generated certificate is stored, you'll need to add this to your systems trusted CA store.
 
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
