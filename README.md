@@ -119,15 +119,14 @@ a fake mail-service for testing and development, enabling you to see Messages th
 
 To run the integration tests, you will need to set up a local SMTP server for testing.
 
-On Windows, try [Papercut](https://papercut.codeplex.com/) or [SMTP4Dev](http://smtp4dev.codeplex.com/).
+To make sure `SecureSocketCest` passes your SMTP server also needs to have TLS support with a SSL certificate.
 
-On Linux, you will likely just have to set up an actual, local SMTP daemon. (see `.travis.yml` for an
-example of installing and starting `smtp-sink` which comes with `postfix`.)
+[smtp4dev](https://github.com/rnwood/smtp4dev) since it has cross-platform support and can generate its own self-signed certificate.
+When configuring smtp4dev make sure to set `TlsMode` to `StartTls`, this ensures that TLS is only used when the client asks for it, setting it to `ImplicitTls` will likely make all non-TLS tests fail.
+When starting the smtp4dev server it should tell you where the generated certificate is stored, you'll need to add this to your systems trusted CA store.
 
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
 SMTP host-name, port-number, etc.
-
-If you want the `SecureSocketCest` to pass you will need to set up a SSL certificate for your SMTP server and make sure your system trusts it.
 
 <a name="objectives"></a>
 ## Objectives
