@@ -6,7 +6,7 @@ use Kodus\Mail\Address;
 use Kodus\Mail\MailServiceLogger;
 use Kodus\Mail\Message;
 use Kodus\Mail\Passive\PassiveMailService;
-use Kodus\Mail\Test\MockLogger;
+use Kodus\Mail\Test\Mocks\MockLogger;
 use RuntimeException;
 use UnitTester;
 

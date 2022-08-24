@@ -1,6 +1,0 @@
-class_name: UnitTester
-modules:
-    enabled:
-        - Asserts
-        - Helper\Unit
-        - Kodus\Mail\Test\ExceptionHelper

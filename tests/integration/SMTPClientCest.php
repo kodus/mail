@@ -3,7 +3,7 @@
 namespace Kodus\Mail\Test\Integration;
 
 use IntegrationTester;
-use Kodus\Mail\Test\MockLogger;
+use Kodus\Mail\Test\Mocks\MockLogger;
 
 class SMTPClientCest
 {

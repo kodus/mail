@@ -1,9 +1,8 @@
 language: php
 
 php:
-  - 7.1
-  - 7.2
-  - 7.3
+  - 8.0
+  - 8.1
 
 before_script:
   - 'composer update --prefer-source'
@@ -13,8 +12,4 @@ before_install:
   - sudo apt-get install -y -qq postfix
   - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
 
-script: if [ $(phpenv version-name) = "7.0" ]; then vendor/bin/codecept run --coverage-xml; else vendor/bin/codecept run; fi
-
-after_script:
-  - if [ $(phpenv version-name) = "7.0" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [ $(phpenv version-name) = "7.0" ]; then php ocular.phar code-coverage:upload --format=php-clover tests/_output/coverage.xml; fi
+script: vendor/bin/codecept run

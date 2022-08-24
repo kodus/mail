@@ -33,7 +33,7 @@ class TestMessageFactory
      *
      * @return string absolute path to fixture file
      */
-    public function getFixturePath($filename)
+    public function getFixturePath(string $filename): string
     {
         return __DIR__ . '/fixtures/' . $filename;
     }
@@ -41,7 +41,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createTextMessage()
+    public function createTextMessage(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
@@ -60,7 +60,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createTextMessageWithAttachment()
+    public function createTextMessageWithAttachment(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
@@ -81,7 +81,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createHTMLMessage()
+    public function createHTMLMessage(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
@@ -99,7 +99,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createHTMLMessageWithAttachment()
+    public function createHTMLMessageWithAttachment(): Message
     {
         $message = $this->createHTMLMessage();
 
@@ -113,7 +113,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createTextAndHTMLMessage()
+    public function createTextAndHTMLMessage(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus Schultz"),
@@ -131,7 +131,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createTextAndHTMLMessageWithAttachment()
+    public function createTextAndHTMLMessageWithAttachment(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus åh Schultz"),
@@ -151,7 +151,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithMultipleAttachments()
+    public function createMessageWithMultipleAttachments(): Message
     {
         $message = new Message(
             new Address("blip@test.org", "Rasmus Schultz"),
@@ -172,7 +172,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithMultipleRecipients()
+    public function createMessageWithMultipleRecipients(): Message
     {
         $message = new Message(
             [
@@ -192,7 +192,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithCCAndBCCRecipients()
+    public function createMessageWithCCAndBCCRecipients(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -213,7 +213,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithCustomHeaders()
+    public function createMessageWithCustomHeaders(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -232,7 +232,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithInlineAttachment()
+    public function createMessageWithInlineAttachment(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -255,7 +255,7 @@ class TestMessageFactory
     /**
      * @return Message
      */
-    public function createMessageWithInlineAttachmentAndTextAlternative()
+    public function createMessageWithInlineAttachmentAndTextAlternative(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -275,7 +275,7 @@ class TestMessageFactory
         return $message;
     }
 
-    public function createMessageWithInlineAndRegularAttachments()
+    public function createMessageWithInlineAndRegularAttachments(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -297,7 +297,7 @@ class TestMessageFactory
         return $message;
     }
 
-    public function createMessageWithInlineAndRegularAttachmentsAndTextAlternative()
+    public function createMessageWithInlineAndRegularAttachmentsAndTextAlternative(): Message
     {
         $message = new Message(
             new Address("blip@test.org"),
@@ -322,7 +322,7 @@ class TestMessageFactory
     /**
      * @return Message[]
      */
-    public function createAllMessageTypes()
+    public function createAllMessageTypes(): array
     {
         $messages = [];
 

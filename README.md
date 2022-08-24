@@ -1,7 +1,7 @@
 kodus/mail
 ==========
 
-[![PHP Version](https://img.shields.io/badge/php-7.1%2B-blue.svg)](https://packagist.org/packages/kodus/mail)
+[![PHP Version](https://img.shields.io/badge/php-8.0%2B-blue.svg)](https://packagist.org/packages/kodus/mail)
 [![Build Status](https://travis-ci.org/kodus/mail.svg?branch=master)](https://travis-ci.org/kodus/mail)
 [![Code Coverage](https://scrutinizer-ci.com/g/kodus/mail/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kodus/mail/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kodus/mail/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kodus/mail/?branch=master)
@@ -119,14 +119,16 @@ a fake mail-service for testing and development, enabling you to see Messages th
 
 To run the integration tests, you will need to set up a local SMTP server for testing.
 
-On Windows, try [Papercut](https://papercut.codeplex.com/) or [SMTP4Dev](http://smtp4dev.codeplex.com/).
+To make sure `SecureSocketCest` passes your SMTP server also needs to have TLS support with a SSL certificate.
 
-On Linux, you will likely just have to set up an actual, local SMTP daemon. (see `.travis.yml` for an
-example of installing and starting `smtp-sink` which comes with `postfix`.)
+It is recommended to use [smtp4dev](https://github.com/rnwood/smtp4dev) since it has cross-platform support and can generate its own self-signed SSL certificate.
+
+When configuring smtp4dev make sure to set `TlsMode` to `StartTls`, this ensures that TLS is only used when the client asks for it, setting it to `ImplicitTls` will likely make all non-TLS tests fail.
+
+When starting the smtp4dev server it should tell you where the generated certificate is stored, you'll need to add this to your systems trusted CA store.
 
 You may need to copy `integration.suite.dist.yml` to `integration.suite.yml` to customize the
 SMTP host-name, port-number, etc.
-
 
 <a name="objectives"></a>
 ## Objectives
