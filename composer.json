@@ -13,7 +13,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">= 8.0",
-        "psr/log": "^1"
+        "psr/log": "^1 || ^2 || ^3"
     },
     "require-dev": {
         "codeception/codeception": "^5",
