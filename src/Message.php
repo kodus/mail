@@ -324,7 +324,7 @@ class Message
      */
     public function setText(?string $text): void
     {
-        if (preg_match('//u', $text) !== 1) {
+        if (preg_match('//u', $text ?? '') !== 1) {
             throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
         }
 
@@ -346,7 +346,7 @@ class Message
      */
     public function setHTML(?string $html): void
     {
-        if (preg_match('//u', $html) !== 1) {
+        if (preg_match('//u', $html ?? '') !== 1) {
             throw new InvalidArgumentException("message body contains an invalid UTF-8 byte sequence");
         }
 
