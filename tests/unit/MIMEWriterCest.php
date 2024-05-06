@@ -341,7 +341,7 @@ class MIMEWriterCest
             Date: Thu, 15 Sep 2016 17:20:54 +0200
             To: blip@test.org
             From: blub@test.org
-            Subject: Hey, Rasmus!
+            Subject: =?UTF-8?Q?We need a special character - =C3=98 - so that quoted_printable_encode is used, and more than 75 characters - see documentation for quoted_printable_encode()?=
             MIME-Version: 1.0
             X-Custom-Header: custom-value
             Content-Type: text/plain; charset=UTF-8
