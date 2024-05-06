@@ -218,7 +218,7 @@ class TestMessageFactory
         $message = new Message(
             new Address("blip@test.org"),
             new Address("blub@test.org"),
-            "Hey, Rasmus!",
+            "We need a special character - Ø - so that escapeHeaderValue is used, and more than 75 characters - see documentation for quoted_printable_encode()",
             "Hello!"
         );
 

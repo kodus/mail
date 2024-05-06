@@ -322,8 +322,10 @@ class MIMEWriter extends Writer
      */
     protected function escapeHeaderValue(string $value): string
     {
+        $quoted_value = quoted_printable_encode($value);
+        $quoted_value = str_replace("=\x0d\x0a",'', $quoted_value);
         return preg_match('/[\x80-\xFF]/', $value) === 1
-            ? "=?UTF-8?Q?" . quoted_printable_encode($value) . "?="
+            ? "=?UTF-8?Q?" . $quoted_value . "?="
             : $value; // as-is
     }
 
