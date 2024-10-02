@@ -106,7 +106,7 @@ class Writer
      */
     protected function writeFiltered($input, string $filter, array $options = []): void
     {
-        $filter = stream_filter_append($this->output, $filter, STREAM_FILTER_WRITE, $options);
+        $filter = stream_filter_prepend($this->output, $filter, STREAM_FILTER_WRITE, $options);
 
         $this->write($input);
 
