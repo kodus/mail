@@ -56,6 +56,7 @@ class MailServiceCest
 
         $message->setSender(new Address("someone-else@test.org"));
 
+        // Throws \Kodus\Mail\SMTP\UnexpectedCodeException if dot stuffing is after encoding
         $service->send($message);
     }
 }
