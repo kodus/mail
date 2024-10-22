@@ -34,7 +34,7 @@ class MailServiceCest
         }
     }
 
-    public function ensureDotStuffingHappensBeforeQuotePrintableEncode(IntegrationTester $I)
+    public function ensureDotStuffingHappensAfterQuotePrintableEncode(IntegrationTester $I)
     {
         $text_body = <<<EOT
         Test mail 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890.
