@@ -30,5 +30,8 @@
             "Kodus\\Mail\\Test\\Unit\\": "tests/unit/",
             "Kodus\\Mail\\Test\\Integration\\": "tests/integration/"
         }
+    },
+    "scripts": {
+        "test": "codecept run"
     }
 }
