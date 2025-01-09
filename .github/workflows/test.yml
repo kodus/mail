@@ -1,6 +1,6 @@
 name: Codeception tests
 
-on: [push]
+on: [ push ]
 
 jobs:
   build:
@@ -11,13 +11,13 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest, ubuntu-20.04 ]
-        php: [ '8.0', '8.1' ]
+        php: [ '8.0', '8.1', '8.4' ]
 
     steps:
       - uses: actions/checkout@master
 
-      - name: Setup PHP
-        uses: nanasess/setup-php@master
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php }}
 
@@ -31,4 +31,4 @@ jobs:
           smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
 
       - name: Run tests
-        run: php vendor/bin/codecept run
+        run: composer run test
